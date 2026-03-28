@@ -8,6 +8,7 @@
 ## Team "Next Wave"
 - Hemakshi Pandey
 - Himanshu Pant
+- Hardik Khandelwal
 
 ## Project Overview
 Brief description of your project and its goals.
