@@ -2,7 +2,6 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Shell from '@/components/layout/Shell'
 import Link from 'next/link'
-import EventCsvImport from '@/components/EventCsvImport'
 export default async function EventDetailPage({
   params,
 }: {
@@ -171,11 +170,7 @@ const { data: preRegistered } = await supabase
             >
               + Add Client
               <div className="flex items-center gap-3">
-  <EventCsvImport
-    eventId={id}
-    eventName={event.name}
-    onSuccess={() => window.location.reload()}
-  />
+  
   <Link
     href={`/clients/new?event_id=${id}`}
     className="bg-[#E07B54] hover:bg-[#C96B44] text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"

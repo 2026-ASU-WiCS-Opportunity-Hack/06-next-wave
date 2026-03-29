@@ -91,11 +91,6 @@ function NewClientPageInner() {
         }
       } else {
       const currentEventId = searchParams.get('event_id')
-  if (p?.role === 'staff' && !currentEventId) {
-    router.push('/events')
-    return
-  }
-
         let evQuery = supabase
           .from('events')
           .select('*, service_types (id, name)')
