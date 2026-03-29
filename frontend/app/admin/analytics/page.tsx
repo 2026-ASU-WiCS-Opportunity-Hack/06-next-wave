@@ -209,7 +209,11 @@ export default async function AnalyticsPage({
             </div>
           ))}
         </div>
-
+          {/* AI Analytics Search — MUST be here, outside the table */}
+<AnalyticsSearch
+  orgId={filterOrgId ?? profile?.org_id ?? undefined}
+  role={role}
+/>
         {/* Nonprofit breakdown table — super admin all orgs view */}
         {orgBreakdown && (
           <div className="bg-white border border-[#E7E5E4] rounded-xl overflow-hidden">

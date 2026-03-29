@@ -123,6 +123,7 @@ export default function AdminPage() {
           {[
             { key: 'nonprofits', label: 'Nonprofits' },
             { key: 'users', label: 'Users' },
+            { key: 'data', label: 'Data & Audit' },
           ].map(tab => (
             <button
               key={tab.key}

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { serviceTypeFields, t, type Language, type DynamicField } from '@/lib/formTemplates'
 import VoiceIntake from '@/components/VoiceIntake'
-
+export const dynamic = 'force-dynamic'
 export default function NewClientPage() {
   const supabase = createClient()
   const router = useRouter()

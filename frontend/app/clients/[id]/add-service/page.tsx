@@ -2,7 +2,7 @@
 import { createClient } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-
+export const dynamic = 'force-dynamic'
 export default function AddServicePage({
   params,
 }: {
