@@ -25,7 +25,7 @@ export default function LandingPage() {
             Pricing
           </a>
           <Link href="/login"
-            className="bg-[#E07B54] hover:bg-[#C96B44] text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-colors">
+            className="bg-[#E07B54] hover:bg-[#C96B44] text-[#1C1917] text-sm font-medium px-5 py-2.5 rounded-xl transition-colors">
             Sign In
           </Link>
         </div>
@@ -53,7 +53,7 @@ export default function LandingPage() {
 
           <div className="flex items-center gap-4">
             <Link href="/login"
-              className="bg-[#1C1917] hover:bg-[#292524] text-white font-semibold px-7 py-3.5 rounded-xl transition-colors text-base">
+              className="bg-[#1C1917] hover:bg-[#292524] text-[#1C1917] font-semibold px-7 py-3.5 rounded-xl transition-colors text-base">
               Get Started Free
             </Link>
             <a href="#features"
@@ -85,7 +85,7 @@ export default function LandingPage() {
       </section>
 
       {/* Problem / Solution */}
-      <section className="bg-[#1C1917] text-white py-20">
+      <section className="bg-[#1C1917] text-[#1C1917] py-20">
         <div className="max-w-6xl mx-auto px-8">
           <div className="grid grid-cols-2 gap-16 items-center">
             <div>
@@ -115,7 +115,7 @@ export default function LandingPage() {
                   </div>
                   <div className="flex items-start gap-3 mt-2">
                     <span className="text-[#E07B54] text-xs mt-0.5 shrink-0">After</span>
-                    <p className="text-white text-sm font-medium">{item.after}</p>
+                    <p className="text-[#1C1917] text-sm font-medium">{item.after}</p>
                   </div>
                 </div>
               ))}
@@ -311,11 +311,11 @@ export default function LandingPage() {
             <div key={plan.name}
               className={`rounded-2xl p-7 border ${
                 plan.highlight
-                  ? 'bg-[#1C1917] text-white border-[#1C1917]'
+                  ? 'bg-[#1C1917] text-[#1C1917] border-[#1C1917]'
                   : 'bg-white text-[#1C1917] border-[#E7E5E4]'
               }`}>
               {plan.highlight && (
-                <div className="inline-block bg-[#E07B54] text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">
+                <div className="inline-block bg-[#E07B54] text-[#1C1917] text-xs font-semibold px-3 py-1 rounded-full mb-4">
                   Most Popular
                 </div>
               )}
@@ -334,8 +334,8 @@ export default function LandingPage() {
               <Link href="/login"
                 className={`block text-center py-2.5 rounded-xl font-medium text-sm transition-colors mb-6 ${
                   plan.highlight
-                    ? 'bg-[#E07B54] hover:bg-[#C96B44] text-white'
-                    : 'bg-[#1C1917] hover:bg-[#292524] text-white'
+                    ? 'bg-[#E07B54] hover:bg-[#C96B44] text-[#1C1917]'
+                    : 'bg-[#1C1917] hover:bg-[#292524] text-[#1C1917]'
                 }`}>
                 {plan.cta}
               </Link>
@@ -362,7 +362,7 @@ export default function LandingPage() {
       {/* CTA */}
       <section className="bg-[#E07B54] py-20">
         <div className="max-w-3xl mx-auto px-8 text-center">
-          <h2 className="text-4xl font-bold text-white mb-4">
+          <h2 className="text-4xl font-bold text-[#1C1917] mb-4">
             Ready to replace your spreadsheets?
           </h2>
           <p className="text-[#FDDCC8] text-lg mb-8">
@@ -384,7 +384,7 @@ export default function LandingPage() {
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
               </svg>
             </div>
-            <span className="text-white font-semibold">CareVo</span>
+            <span className="text-[#1C1917] font-semibold">CareVo</span>
           </div>
           <p className="text-sm">
             Built with ❤️ at{' '}

@@ -182,37 +182,37 @@ setDynamicFields(fields)
     router.push(eventId ? `/events/${eventId}` : `/clients/${client.id}`)
   }
 
-  const inputClass = "w-full bg-slate-800 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500"
-  const labelClass = "text-sm text-slate-400 mb-1 block"
+  const inputClass = "w-full bg-[#F5F3F0] border border-[#D6D3D1] text-[#1C1917] placeholder-[#C4BFB9] rounded-xl px-4 py-3 focus:outline-none focus:border-[#E07B54]"
+  const labelClass = "text-sm text-[#78716C] mb-1 block"
 
   return (
-    <div className="min-h-screen bg-slate-950 p-6">
+    <div className="min-h-screen bg-[#FDFAF6] p-6">
       <div className="max-w-2xl mx-auto space-y-6">
 
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button onClick={() => router.back()}
-              className="text-slate-400 hover:text-white transition-colors">
+              className="text-[#78716C] hover:text-[#1C1917] transition-colors">
               ← Back
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-white">Register Client</h1>
+              <h1 className="text-2xl font-bold text-[#1C1917]">Register Client</h1>
               {event && (
-                <p className="text-slate-400 text-sm mt-0.5">@ {event.name}</p>
+                <p className="text-[#78716C] text-sm mt-0.5">@ {event.name}</p>
               )}
             </div>
           </div>
           {/* Language Toggle */}
-          <div className="flex gap-1 bg-slate-800 rounded-xl p-1">
+          <div className="flex gap-1 bg-[#F5F3F0] rounded-xl p-1">
             {(['en', 'es', 'fr'] as Language[]).map(l => (
               <button
                 key={l}
                 onClick={() => setLang(l)}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors uppercase ${
                   lang === l
-                    ? 'bg-blue-600 text-white'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-[#E07B54] text-[#1C1917]'
+                    : 'text-[#78716C] hover:text-[#1C1917]'
                 }`}
               >
                 {l}
@@ -222,11 +222,11 @@ setDynamicFields(fields)
         </div>
 
         {/* Photo to Intake */}
-        <div className="bg-slate-900 border border-dashed border-slate-600 rounded-2xl p-5">
+        <div className="bg-white border border-dashed border-[#D6D3D1] rounded-2xl p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-white font-medium">📸 {t('photo_intake', lang)}</p>
-              <p className="text-slate-500 text-sm mt-0.5">
+              <p className="text-[#1C1917] font-medium">📸 {t('photo_intake', lang)}</p>
+              <p className="text-[#A8A29E] text-sm mt-0.5">
                 Upload a photo of a paper form — AI will fill the fields
               </p>
             </div>
@@ -241,7 +241,7 @@ setDynamicFields(fields)
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={scanning}
-              className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors disabled:opacity-50 shrink-0"
+              className="bg-[#E07B54] hover:bg-[#C96B44] text-[#1C1917] text-sm font-medium px-4 py-2 rounded-xl transition-colors disabled:opacity-50 shrink-0"
             >
               {scanning ? t('uploading', lang) : t('photo_intake', lang)}
             </button>
@@ -252,8 +252,8 @@ setDynamicFields(fields)
         <VoiceIntake onExtracted={handleVoiceExtracted} lang={lang} />
 
         {/* Core Fields */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-          <h2 className="text-white font-semibold">Client Information</h2>
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-6 space-y-4">
+          <h2 className="text-[#1C1917] font-semibold">Client Information</h2>
           <div>
             <label className={labelClass}>{t('full_name', lang)} *</label>
             <input type="text" value={form.full_name}
@@ -312,8 +312,8 @@ setDynamicFields(fields)
 
         {/* Dynamic Fields */}
         {dynamicFields.length > 0 && (
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-            <h2 className="text-white font-semibold">
+          <div className="bg-white border border-[#E7E5E4] rounded-2xl p-6 space-y-4">
+            <h2 className="text-[#1C1917] font-semibold">
               {(event?.service_types as any)?.name} Details
             </h2>
             {dynamicFields.map((field: DynamicField) => (
@@ -344,8 +344,8 @@ setDynamicFields(fields)
         )}
 
         {/* Service Entry */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-          <h2 className="text-white font-semibold">Service Provided</h2>
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-6 space-y-4">
+          <h2 className="text-[#1C1917] font-semibold">Service Provided</h2>
           <div>
             <label className={labelClass}>Service Type</label>
             <select
@@ -374,7 +374,7 @@ setDynamicFields(fields)
         <button
           onClick={handleSubmit}
           disabled={loading || !form.full_name}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-4 rounded-xl transition-colors disabled:opacity-50 text-lg"
+          className="w-full bg-[#E07B54] hover:bg-[#C96B44] text-[#1C1917] font-medium py-4 rounded-xl transition-colors disabled:opacity-50 text-lg"
         >
           {loading ? 'Saving...' : t('submit', lang)}
         </button>

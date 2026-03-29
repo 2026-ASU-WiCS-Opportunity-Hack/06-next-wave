@@ -46,21 +46,21 @@ export default async function DashboardPage() {
       <Shell role={role}>
         <div className="space-y-8">
           <div>
-            <h1 className="text-2xl font-bold text-white">Super Admin Dashboard</h1>
-            <p className="text-slate-400 text-sm mt-1">Cross-organization overview</p>
+            <h1 className="text-2xl font-bold text-[#1C1917]">Super Admin Dashboard</h1>
+            <p className="text-[#78716C] text-sm mt-1">Cross-organization overview</p>
           </div>
 
           {/* Global stats */}
           <div className="grid grid-cols-4 gap-4">
             {[
-              { label: 'Total Nonprofits', value: orgs?.length ?? 0, color: 'text-blue-400' },
+              { label: 'Total Nonprofits', value: orgs?.length ?? 0, color: 'text-[#E07B54]' },
               { label: 'Total Clients', value: totalClients ?? 0, color: 'text-green-400' },
               { label: 'Service Entries', value: totalEntries ?? 0, color: 'text-purple-400' },
               { label: 'Total Events', value: totalEvents ?? 0, color: 'text-yellow-400' },
             ].map(stat => (
-              <div key={stat.label} className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+              <div key={stat.label} className="bg-white border border-[#E7E5E4] rounded-xl p-5">
                 <p className={`text-3xl font-bold ${stat.color}`}>{stat.value}</p>
-                <p className="text-slate-400 text-sm mt-1">{stat.label}</p>
+                <p className="text-[#78716C] text-sm mt-1">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -68,25 +68,25 @@ export default async function DashboardPage() {
           {/* Nonprofits */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-white">
+              <h2 className="text-lg font-semibold text-[#1C1917]">
                 Nonprofits ({orgs?.length ?? 0})
               </h2>
               <Link href="/admin"
-                className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                className="bg-[#E07B54] hover:bg-[#C96B44] text-[#1C1917] text-sm font-medium px-4 py-2 rounded-lg transition-colors">
                 + Add Nonprofit
               </Link>
             </div>
             <div className="grid gap-3">
               {orgs?.map(org => (
                 <div key={org.id}
-                  className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                  className="bg-white border border-[#E7E5E4] rounded-xl p-5">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-semibold text-white">{org.name}</p>
-                      <p className="text-slate-400 text-sm">{org.address} · {org.email}</p>
+                      <p className="font-semibold text-[#1C1917]">{org.name}</p>
+                      <p className="text-[#78716C] text-sm">{org.address} · {org.email}</p>
                     </div>
                     <Link href={`/admin/analytics?org=${org.id}`}
-                      className="text-blue-400 hover:text-blue-300 text-sm transition-colors">
+                      className="text-[#E07B54] hover:text-[#C96B44] text-sm transition-colors">
                       View Analytics →
                     </Link>
                   </div>
@@ -97,21 +97,21 @@ export default async function DashboardPage() {
 
           {/* Recent events across all orgs */}
           <div>
-            <h2 className="text-lg font-semibold text-white mb-4">Recent Events</h2>
+            <h2 className="text-lg font-semibold text-[#1C1917] mb-4">Recent Events</h2>
             <div className="grid gap-3">
               {recentEvents?.map(event => (
                 <Link key={event.id} href={`/events/${event.id}`}>
-                  <div className="bg-slate-900 border border-slate-800 hover:border-slate-600 rounded-xl p-4 transition-colors">
+                  <div className="bg-white border border-[#E7E5E4] hover:border-[#D6D3D1] rounded-xl p-4 transition-colors">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium text-white">{event.name}</p>
-                        <p className="text-slate-400 text-sm">
+                        <p className="font-medium text-[#1C1917]">{event.name}</p>
+                        <p className="text-[#78716C] text-sm">
                           {(event.organizations as any)?.name} ·{' '}
                           {(event.service_types as any)?.name} ·{' '}
                           {new Date(event.event_date).toLocaleDateString()}
                         </p>
                       </div>
-                      <span className="text-slate-500 text-sm">→</span>
+                      <span className="text-[#A8A29E] text-sm">→</span>
                     </div>
                   </div>
                 </Link>
@@ -153,8 +153,8 @@ export default async function DashboardPage() {
       <Shell role={role} orgName={orgName}>
         <div className="space-y-8">
           <div>
-            <h1 className="text-2xl font-bold text-white">{orgName}</h1>
-            <p className="text-slate-400 text-sm mt-1">Organization Dashboard</p>
+            <h1 className="text-2xl font-bold text-[#1C1917]">{orgName}</h1>
+            <p className="text-[#78716C] text-sm mt-1">Organization Dashboard</p>
           </div>
 
           {/* Org stats */}
@@ -163,11 +163,11 @@ export default async function DashboardPage() {
               { label: 'Total Clients', value: totalClients ?? 0, color: 'text-green-400' },
               { label: 'Service Entries', value: totalEntries ?? 0, color: 'text-purple-400' },
               { label: 'Events', value: events?.length ?? 0, color: 'text-yellow-400' },
-              { label: 'Staff Members', value: workers?.length ?? 0, color: 'text-blue-400' },
+              { label: 'Staff Members', value: workers?.length ?? 0, color: 'text-[#E07B54]' },
             ].map(stat => (
-              <div key={stat.label} className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+              <div key={stat.label} className="bg-white border border-[#E7E5E4] rounded-xl p-5">
                 <p className={`text-3xl font-bold ${stat.color}`}>{stat.value}</p>
-                <p className="text-slate-400 text-sm mt-1">{stat.label}</p>
+                <p className="text-[#78716C] text-sm mt-1">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -175,28 +175,28 @@ export default async function DashboardPage() {
           {/* Events */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-white">
+              <h2 className="text-lg font-semibold text-[#1C1917]">
                 Events ({events?.length ?? 0})
               </h2>
               <Link href="/events/new"
-                className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                className="bg-[#E07B54] hover:bg-[#C96B44] text-[#1C1917] text-sm font-medium px-4 py-2 rounded-lg transition-colors">
                 + New Event
               </Link>
             </div>
             <div className="grid gap-3">
               {events?.map(event => (
                 <Link key={event.id} href={`/events/${event.id}`}>
-                  <div className="bg-slate-900 border border-slate-800 hover:border-slate-600 rounded-xl p-4 transition-colors">
+                  <div className="bg-white border border-[#E7E5E4] hover:border-[#D6D3D1] rounded-xl p-4 transition-colors">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium text-white">{event.name}</p>
-                        <p className="text-slate-400 text-sm">
+                        <p className="font-medium text-[#1C1917]">{event.name}</p>
+                        <p className="text-[#78716C] text-sm">
                           {event.location} ·{' '}
                           {(event.service_types as any)?.name} ·{' '}
                           {new Date(event.event_date).toLocaleDateString()}
                         </p>
                       </div>
-                      <span className="text-slate-500 text-sm">→</span>
+                      <span className="text-[#A8A29E] text-sm">→</span>
                     </div>
                   </div>
                 </Link>
@@ -206,15 +206,15 @@ export default async function DashboardPage() {
 
           {/* Staff */}
           <div>
-            <h2 className="text-lg font-semibold text-white mb-4">
+            <h2 className="text-lg font-semibold text-[#1C1917] mb-4">
               Staff ({workers?.length ?? 0})
             </h2>
             <div className="flex gap-2 flex-wrap">
               {workers?.map(w => (
                 <div key={w.id}
-                  className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2">
-                  <p className="text-white text-sm font-medium">{w.full_name}</p>
-                  <p className="text-slate-500 text-xs">{w.email}</p>
+                  className="bg-white border border-[#E7E5E4] rounded-xl px-4 py-2">
+                  <p className="text-[#1C1917] text-sm font-medium">{w.full_name}</p>
+                  <p className="text-[#A8A29E] text-xs">{w.email}</p>
                 </div>
               ))}
             </div>
@@ -254,10 +254,10 @@ export default async function DashboardPage() {
     <Shell role={role} orgName={orgName}>
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-bold text-white">
+          <h1 className="text-2xl font-bold text-[#1C1917]">
             Welcome, {profile?.full_name?.split(' ')[0]}
           </h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="text-[#78716C] text-sm mt-1">
             {orgName} · {new Date().toLocaleDateString('en-US', {
               weekday: 'long', month: 'long', day: 'numeric'
             })}
@@ -270,35 +270,35 @@ export default async function DashboardPage() {
             { label: 'My Clients', value: myClients ?? 0, color: 'text-green-400' },
             { label: 'My Service Entries', value: myEntries ?? 0, color: 'text-purple-400' },
           ].map(stat => (
-            <div key={stat.label} className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <div key={stat.label} className="bg-white border border-[#E7E5E4] rounded-xl p-5">
               <p className={`text-3xl font-bold ${stat.color}`}>{stat.value}</p>
-              <p className="text-slate-400 text-sm mt-1">{stat.label}</p>
+              <p className="text-[#78716C] text-sm mt-1">{stat.label}</p>
             </div>
           ))}
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold text-white mb-4">Your Assigned Events</h2>
+          <h2 className="text-lg font-semibold text-[#1C1917] mb-4">Your Assigned Events</h2>
           {events?.length === 0 ? (
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center">
-              <p className="text-slate-400">No events assigned yet. Contact your org admin.</p>
+            <div className="bg-white border border-[#E7E5E4] rounded-xl p-12 text-center">
+              <p className="text-[#78716C]">No events assigned yet. Contact your org admin.</p>
             </div>
           ) : (
             <div className="grid gap-3">
               {events?.map(event => (
                 <Link key={event.id} href={`/events/${event.id}`}>
-                  <div className="bg-slate-900 border border-slate-800 hover:border-slate-600 rounded-xl p-5 transition-colors">
+                  <div className="bg-white border border-[#E7E5E4] hover:border-[#D6D3D1] rounded-xl p-5 transition-colors">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium text-white">{event.name}</p>
-                        <p className="text-slate-400 text-sm mt-1">
+                        <p className="font-medium text-[#1C1917]">{event.name}</p>
+                        <p className="text-[#78716C] text-sm mt-1">
                           {event.location} ·{' '}
                           {new Date(event.event_date).toLocaleDateString('en-US', {
                             month: 'short', day: 'numeric', year: 'numeric'
                           })}
                         </p>
                       </div>
-                      <span className="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full">
+                      <span className="text-xs bg-[#F5F3F0] text-[#57534E] px-3 py-1 rounded-full">
                         {(event.service_types as any)?.name ?? 'General'}
                       </span>
                     </div>

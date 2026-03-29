@@ -56,15 +56,15 @@ export default async function ClientsPage({
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white">Clients</h1>
+            <h1 className="text-2xl font-bold text-[#1C1917]">Clients</h1>
             {profile?.role === 'staff' && (
-              <p className="text-slate-500 text-sm mt-0.5">
+              <p className="text-[#A8A29E] text-sm mt-0.5">
                 Showing clients you registered
               </p>
             )}
           </div>
           <Link href="/clients/new"
-            className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+            className="bg-[#E07B54] hover:bg-[#C96B44] text-[#1C1917] text-sm font-medium px-4 py-2 rounded-lg transition-colors">
             + New Client
           </Link>
         </div>
@@ -84,15 +84,15 @@ export default async function ClientsPage({
             name="q"
             defaultValue={q}
             placeholder="Search clients by name..."
-            className="w-full bg-slate-900 border border-slate-800 text-white placeholder-slate-500 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500"
+            className="w-full bg-white border border-[#E7E5E4] text-[#1C1917] placeholder-[#C4BFB9] rounded-xl px-4 py-3 focus:outline-none focus:border-[#E07B54]"
           />
         </form>
 
         {/* Client list */}
         <div className="grid gap-3">
           {clients?.length === 0 ? (
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center">
-              <p className="text-slate-400">
+            <div className="bg-white border border-[#E7E5E4] rounded-xl p-12 text-center">
+              <p className="text-[#78716C]">
                 {q ? `No clients found for "${q}"` : 'No clients yet'}
               </p>
             </div>
@@ -102,31 +102,31 @@ export default async function ClientsPage({
               const isDuplicate = phone && duplicatePhones.has(phone)
               return (
                 <Link key={client.id} href={`/clients/${client.id}`}>
-                  <div className={`bg-slate-900 border rounded-xl p-4 transition-colors ${
+                  <div className={`bg-white border rounded-xl p-4 transition-colors ${
                     isDuplicate
                       ? 'border-yellow-700 hover:border-yellow-500'
-                      : 'border-slate-800 hover:border-slate-600'
+                      : 'border-[#E7E5E4] hover:border-[#D6D3D1]'
                   }`}>
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <p className="font-medium text-white">{client.full_name}</p>
+                          <p className="font-medium text-[#1C1917]">{client.full_name}</p>
                           {isDuplicate && (
                             <span className="text-xs bg-yellow-900 text-yellow-400 px-2 py-0.5 rounded-full">
                               Possible duplicate
                             </span>
                           )}
                         </div>
-                        <p className="text-slate-400 text-sm mt-0.5">
+                        <p className="text-[#78716C] text-sm mt-0.5">
                           {phone ?? client.email ?? 'No contact info'} ·{' '}
                           {client.demographics?.language ?? 'Language unknown'}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-slate-500 text-xs">
+                        <p className="text-[#A8A29E] text-xs">
                           {new Date(client.created_at).toLocaleDateString()}
                         </p>
-                        <span className="text-slate-500 text-sm">→</span>
+                        <span className="text-[#A8A29E] text-sm">→</span>
                       </div>
                     </div>
                   </div>

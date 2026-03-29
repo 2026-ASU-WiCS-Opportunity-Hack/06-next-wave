@@ -126,23 +126,23 @@ export default function VoiceIntake({ onExtracted, lang }: VoiceIntakeProps) {
   }
 
   return (
-    <div className="bg-slate-900 border border-dashed border-slate-600 rounded-2xl p-5 space-y-4">
+    <div className="bg-white border border-dashed border-[#D6D3D1] rounded-2xl p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-white font-medium">🎙️ {l('title', lang)}</p>
-          <p className="text-slate-500 text-sm mt-0.5">{l('subtitle', lang)}</p>
+          <p className="text-[#1C1917] font-medium">🎙️ {l('title', lang)}</p>
+          <p className="text-[#A8A29E] text-sm mt-0.5">{l('subtitle', lang)}</p>
         </div>
         <div className="flex items-center gap-2">
           {/* Language indicator */}
-          <span className="text-xs bg-slate-800 text-slate-400 px-2 py-1 rounded-lg uppercase">
+          <span className="text-xs bg-[#F5F3F0] text-[#78716C] px-2 py-1 rounded-lg uppercase">
             {lang} · {langMap[lang] ?? 'en-US'}
           </span>
           <button
             onClick={recording ? stopRecording : startRecording}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
               recording
-                ? 'bg-red-600 hover:bg-red-700 text-white animate-pulse'
-                : 'bg-slate-700 hover:bg-slate-600 text-white'
+                ? 'bg-red-600 hover:bg-red-700 text-[#1C1917] animate-pulse'
+                : 'bg-[#E7E5E4] hover:bg-slate-600 text-[#1C1917]'
             }`}
           >
             {recording ? (
@@ -162,7 +162,7 @@ export default function VoiceIntake({ onExtracted, lang }: VoiceIntakeProps) {
               onChange={e => setTranscript(e.target.value)}
               rows={4}
               placeholder={l('placeholder', lang)}
-              className="w-full bg-slate-800 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 resize-none text-sm"
+              className="w-full bg-[#F5F3F0] border border-[#D6D3D1] text-[#1C1917] placeholder-[#C4BFB9] rounded-xl px-4 py-3 focus:outline-none focus:border-[#E07B54] resize-none text-sm"
             />
             {recording && (
               <div className="absolute top-3 right-3 flex gap-1 items-end">
@@ -179,13 +179,13 @@ export default function VoiceIntake({ onExtracted, lang }: VoiceIntakeProps) {
             <button
               onClick={handleExtract}
               disabled={extracting || !transcript.trim()}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-xl transition-colors disabled:opacity-50 text-sm"
+              className="flex-1 bg-[#E07B54] hover:bg-[#C96B44] text-[#1C1917] font-medium py-2.5 rounded-xl transition-colors disabled:opacity-50 text-sm"
             >
               {extracting ? l('extracting', lang) : l('extract', lang)}
             </button>
             <button
               onClick={handleClear}
-              className="px-4 py-2.5 text-slate-400 hover:text-white border border-slate-700 rounded-xl transition-colors text-sm"
+              className="px-4 py-2.5 text-[#78716C] hover:text-[#1C1917] border border-[#D6D3D1] rounded-xl transition-colors text-sm"
             >
               {l('clear', lang)}
             </button>
@@ -196,7 +196,7 @@ export default function VoiceIntake({ onExtracted, lang }: VoiceIntakeProps) {
       {error && <p className="text-red-400 text-sm">{error}</p>}
 
       {!transcript && !recording && (
-        <p className="text-slate-600 text-xs">{l('hint', lang)}</p>
+        <p className="text-[#A8A29E] text-xs">{l('hint', lang)}</p>
       )}
     </div>
   )

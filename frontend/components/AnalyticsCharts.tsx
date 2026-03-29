@@ -15,16 +15,16 @@ const COLORS = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4'
 function BarChart({ data, label }: { data: { label: string; count: number }[], label: string }) {
   const max = Math.max(...data.map(d => d.count), 1)
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-      <h3 className="text-white font-semibold mb-4">{label}</h3>
+    <div className="bg-white border border-[#E7E5E4] rounded-xl p-5">
+      <h3 className="text-[#1C1917] font-semibold mb-4">{label}</h3>
       <div className="space-y-3">
         {data.map((d, i) => (
           <div key={d.label}>
             <div className="flex items-center justify-between mb-1">
-              <span className="text-slate-300 text-sm truncate max-w-[60%]">{d.label}</span>
-              <span className="text-slate-400 text-sm">{d.count}</span>
+              <span className="text-[#57534E] text-sm truncate max-w-[60%]">{d.label}</span>
+              <span className="text-[#78716C] text-sm">{d.count}</span>
             </div>
-            <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+            <div className="h-2 bg-[#F5F3F0] rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{
@@ -43,8 +43,8 @@ function BarChart({ data, label }: { data: { label: string; count: number }[], l
 function DonutChart({ data, label }: { data: { label: string; count: number }[], label: string }) {
   const total = data.reduce((sum, d) => sum + d.count, 0)
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-      <h3 className="text-white font-semibold mb-4">{label}</h3>
+    <div className="bg-white border border-[#E7E5E4] rounded-xl p-5">
+      <h3 className="text-[#1C1917] font-semibold mb-4">{label}</h3>
       <div className="space-y-2">
         {data.map((d, i) => {
           const pct = total > 0 ? Math.round((d.count / total) * 100) : 0
@@ -55,9 +55,9 @@ function DonutChart({ data, label }: { data: { label: string; count: number }[],
                 style={{ backgroundColor: COLORS[i % COLORS.length] }}
               />
               <div className="flex-1 flex items-center justify-between">
-                <span className="text-slate-300 text-sm truncate">{d.label}</span>
+                <span className="text-[#57534E] text-sm truncate">{d.label}</span>
                 <div className="flex items-center gap-2">
-                  <div className="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                  <div className="w-16 h-1.5 bg-[#F5F3F0] rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full"
                       style={{
@@ -66,14 +66,14 @@ function DonutChart({ data, label }: { data: { label: string; count: number }[],
                       }}
                     />
                   </div>
-                  <span className="text-slate-400 text-xs w-8 text-right">{pct}%</span>
+                  <span className="text-[#78716C] text-xs w-8 text-right">{pct}%</span>
                 </div>
               </div>
             </div>
           )
         })}
       </div>
-      <p className="text-slate-600 text-xs mt-3">Total: {total}</p>
+      <p className="text-[#A8A29E] text-xs mt-3">Total: {total}</p>
     </div>
   )
 }
@@ -81,12 +81,12 @@ function DonutChart({ data, label }: { data: { label: string; count: number }[],
 function TrendChart({ data }: { data: { label: string; date: string; count: number }[] }) {
   const max = Math.max(...data.map(d => d.count), 1)
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-      <h3 className="text-white font-semibold mb-4">Weekly Service Entries (Last 8 Weeks)</h3>
+    <div className="bg-white border border-[#E7E5E4] rounded-xl p-5">
+      <h3 className="text-[#1C1917] font-semibold mb-4">Weekly Service Entries (Last 8 Weeks)</h3>
       <div className="flex items-end gap-2 h-32">
         {data.map((d, i) => (
           <div key={d.label} className="flex-1 flex flex-col items-center gap-1">
-            <span className="text-slate-400 text-xs">{d.count}</span>
+            <span className="text-[#78716C] text-xs">{d.count}</span>
             <div
               className="w-full rounded-t-sm transition-all duration-500"
               style={{
@@ -95,7 +95,7 @@ function TrendChart({ data }: { data: { label: string; date: string; count: numb
                 minHeight: '4px'
               }}
             />
-            <span className="text-slate-500 text-xs">{d.date}</span>
+            <span className="text-[#A8A29E] text-xs">{d.date}</span>
           </div>
         ))}
       </div>
@@ -135,27 +135,27 @@ export default function AnalyticsCharts({
       </div>
 
       {/* Service type stats table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-800">
-          <h3 className="text-white font-semibold">Service Type Summary</h3>
+      <div className="bg-white border border-[#E7E5E4] rounded-xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-[#E7E5E4]">
+          <h3 className="text-[#1C1917] font-semibold">Service Type Summary</h3>
         </div>
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-800">
-              <th className="text-left text-slate-400 text-sm px-5 py-3">Service Type</th>
-              <th className="text-right text-slate-400 text-sm px-5 py-3">Unique Clients</th>
-              <th className="text-right text-slate-400 text-sm px-5 py-3">Total Entries</th>
-              <th className="text-right text-slate-400 text-sm px-5 py-3">Avg Visits/Client</th>
+            <tr className="border-b border-[#E7E5E4]">
+              <th className="text-left text-[#78716C] text-sm px-5 py-3">Service Type</th>
+              <th className="text-right text-[#78716C] text-sm px-5 py-3">Unique Clients</th>
+              <th className="text-right text-[#78716C] text-sm px-5 py-3">Total Entries</th>
+              <th className="text-right text-[#78716C] text-sm px-5 py-3">Avg Visits/Client</th>
             </tr>
           </thead>
           <tbody>
             {statsPerType.map((st, i) => (
               <tr key={st.name}
-                className={`border-b border-slate-800 ${i % 2 === 0 ? '' : 'bg-slate-800/30'}`}>
-                <td className="text-white text-sm px-5 py-3">{st.name}</td>
-                <td className="text-slate-300 text-sm px-5 py-3 text-right">{st.unique_clients}</td>
-                <td className="text-slate-300 text-sm px-5 py-3 text-right">{st.total_entries}</td>
-                <td className="text-slate-300 text-sm px-5 py-3 text-right">
+                className={`border-b border-[#E7E5E4] ${i % 2 === 0 ? '' : 'bg-[#F5F3F0]/30'}`}>
+                <td className="text-[#1C1917] text-sm px-5 py-3">{st.name}</td>
+                <td className="text-[#57534E] text-sm px-5 py-3 text-right">{st.unique_clients}</td>
+                <td className="text-[#57534E] text-sm px-5 py-3 text-right">{st.total_entries}</td>
+                <td className="text-[#57534E] text-sm px-5 py-3 text-right">
                   {st.unique_clients > 0
                     ? (st.total_entries / st.unique_clients).toFixed(1)
                     : '—'}

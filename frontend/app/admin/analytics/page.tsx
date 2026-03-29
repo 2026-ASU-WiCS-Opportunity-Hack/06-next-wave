@@ -146,8 +146,8 @@ export default async function AnalyticsPage({
         {/* Header + org filter */}
 <div className="flex items-start justify-between flex-wrap gap-4">
   <div>
-    <h1 className="text-2xl font-bold text-white">Analytics</h1>
-    <p className="text-slate-400 text-sm mt-1">{selectedOrgName}</p>
+    <h1 className="text-2xl font-bold text-[#1C1917]">Analytics</h1>
+    <p className="text-[#78716C] text-sm mt-1">{selectedOrgName}</p>
   </div>
 
   <div className="flex items-center gap-3 flex-wrap">
@@ -173,8 +173,8 @@ export default async function AnalyticsPage({
         <a href="/admin/analytics"
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             !filterOrgId
-              ? 'bg-blue-600 text-white'
-              : 'bg-slate-800 text-slate-300 hover:text-white'
+              ? 'bg-[#E07B54] text-[#1C1917]'
+              : 'bg-[#F5F3F0] text-[#57534E] hover:text-[#1C1917]'
           }`}>
           All Orgs
         </a>
@@ -183,8 +183,8 @@ export default async function AnalyticsPage({
             href={`/admin/analytics?org=${o.id}`}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               filterOrgId === o.id
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-800 text-slate-300 hover:text-white'
+                ? 'bg-[#E07B54] text-[#1C1917]'
+                : 'bg-[#F5F3F0] text-[#57534E] hover:text-[#1C1917]'
             }`}>
             {o.name.split(' ')[0]}
           </a>
@@ -197,33 +197,33 @@ export default async function AnalyticsPage({
         {/* Top stats */}
         <div className="grid grid-cols-4 gap-4">
           {[
-            { label: 'Total Clients', value: clients?.length ?? 0, color: 'text-blue-400' },
+            { label: 'Total Clients', value: clients?.length ?? 0, color: 'text-[#E07B54]' },
             { label: 'Service Entries', value: entries?.length ?? 0, color: 'text-green-400' },
             { label: 'Events', value: events?.length ?? 0, color: 'text-yellow-400' },
             { label: 'Active Service Types', value: statsPerType.length, color: 'text-purple-400' },
           ].map(stat => (
             <div key={stat.label}
-              className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+              className="bg-white border border-[#E7E5E4] rounded-xl p-5">
               <p className={`text-3xl font-bold ${stat.color}`}>{stat.value}</p>
-              <p className="text-slate-400 text-sm mt-1">{stat.label}</p>
+              <p className="text-[#78716C] text-sm mt-1">{stat.label}</p>
             </div>
           ))}
         </div>
 
         {/* Nonprofit breakdown table — super admin all orgs view */}
         {orgBreakdown && (
-          <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-800">
-              <h3 className="text-white font-semibold">Nonprofit Breakdown</h3>
+          <div className="bg-white border border-[#E7E5E4] rounded-xl overflow-hidden">
+            <div className="px-5 py-4 border-b border-[#E7E5E4]">
+              <h3 className="text-[#1C1917] font-semibold">Nonprofit Breakdown</h3>
             </div>
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-800">
-                  <th className="text-left text-slate-400 text-sm px-5 py-3">Organization</th>
-                  <th className="text-right text-slate-400 text-sm px-5 py-3">Clients</th>
-                  <th className="text-right text-slate-400 text-sm px-5 py-3">Service Entries</th>
-                  <th className="text-right text-slate-400 text-sm px-5 py-3">Events</th>
-                  <th className="text-right text-slate-400 text-sm px-5 py-3"></th>
+                <tr className="border-b border-[#E7E5E4]">
+                  <th className="text-left text-[#78716C] text-sm px-5 py-3">Organization</th>
+                  <th className="text-right text-[#78716C] text-sm px-5 py-3">Clients</th>
+                  <th className="text-right text-[#78716C] text-sm px-5 py-3">Service Entries</th>
+                  <th className="text-right text-[#78716C] text-sm px-5 py-3">Events</th>
+                  <th className="text-right text-[#78716C] text-sm px-5 py-3"></th>
                 </tr>
               </thead>
               {/* AI Analytics Search */}
@@ -234,14 +234,14 @@ export default async function AnalyticsPage({
               <tbody>
                 {orgBreakdown.map((o, i) => (
                   <tr key={o.id}
-                    className={`border-b border-slate-800 ${i % 2 === 0 ? '' : 'bg-slate-800/30'}`}>
-                    <td className="text-white text-sm px-5 py-3 font-medium">{o.name}</td>
-                    <td className="text-slate-300 text-sm px-5 py-3 text-right">{o.clients}</td>
-                    <td className="text-slate-300 text-sm px-5 py-3 text-right">{o.entries}</td>
-                    <td className="text-slate-300 text-sm px-5 py-3 text-right">{o.events}</td>
-                    <td className="text-slate-300 text-sm px-5 py-3 text-right">
+                    className={`border-b border-[#E7E5E4] ${i % 2 === 0 ? '' : 'bg-[#F5F3F0]/30'}`}>
+                    <td className="text-[#1C1917] text-sm px-5 py-3 font-medium">{o.name}</td>
+                    <td className="text-[#57534E] text-sm px-5 py-3 text-right">{o.clients}</td>
+                    <td className="text-[#57534E] text-sm px-5 py-3 text-right">{o.entries}</td>
+                    <td className="text-[#57534E] text-sm px-5 py-3 text-right">{o.events}</td>
+                    <td className="text-[#57534E] text-sm px-5 py-3 text-right">
                       <a href={`/admin/analytics?org=${o.id}`}
-                        className="text-blue-400 hover:text-blue-300 text-xs transition-colors">
+                        className="text-[#E07B54] hover:text-[#C96B44] text-xs transition-colors">
                         Drill down →
                       </a>
                     </td>

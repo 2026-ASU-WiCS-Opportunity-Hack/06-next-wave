@@ -104,22 +104,22 @@ export default function AdminPage() {
 
   if (!profile) return null
 
-  const inputClass = "w-full bg-slate-800 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500"
-  const labelClass = "text-sm text-slate-400 mb-1 block"
+  const inputClass = "w-full bg-[#F5F3F0] border border-[#D6D3D1] text-[#1C1917] placeholder-[#C4BFB9] rounded-xl px-4 py-3 focus:outline-none focus:border-[#E07B54]"
+  const labelClass = "text-sm text-[#78716C] mb-1 block"
 
   return (
     <Shell role={profile.role}>
       <div className="space-y-6 max-w-3xl">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-white">Admin Panel</h1>
+          <h1 className="text-2xl font-bold text-[#1C1917]">Admin Panel</h1>
           <a href="/admin/analytics"
-            className="bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm px-4 py-2 rounded-lg transition-colors">
+            className="bg-[#F5F3F0] hover:bg-[#E7E5E4] text-[#57534E] text-sm px-4 py-2 rounded-lg transition-colors">
             📊 Analytics
           </a>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 bg-slate-800 rounded-xl p-1 w-fit">
+        <div className="flex gap-1 bg-[#F5F3F0] rounded-xl p-1 w-fit">
           {[
             { key: 'nonprofits', label: 'Nonprofits' },
             { key: 'users', label: 'Users' },
@@ -129,8 +129,8 @@ export default function AdminPage() {
               onClick={() => setActiveTab(tab.key as any)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeTab === tab.key
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#E07B54] text-[#1C1917]'
+                  : 'text-[#78716C] hover:text-[#1C1917]'
               }`}
             >
               {tab.label}
@@ -149,8 +149,8 @@ export default function AdminPage() {
           <div className="space-y-6">
             {/* Create org form */}
             {profile.role === 'super_admin' && (
-              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-                <h2 className="text-lg font-semibold text-white">Add Nonprofit</h2>
+              <div className="bg-white border border-[#E7E5E4] rounded-2xl p-6 space-y-4">
+                <h2 className="text-lg font-semibold text-[#1C1917]">Add Nonprofit</h2>
                 <div>
                   <label className={labelClass}>Organization Name *</label>
                   <input type="text" placeholder="ICM Food Bank"
@@ -184,7 +184,7 @@ export default function AdminPage() {
                 <button
                   onClick={handleCreateOrg}
                   disabled={loading || !orgForm.name}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-50">
+                  className="w-full bg-[#E07B54] hover:bg-[#C96B44] text-[#1C1917] font-medium py-3 rounded-xl transition-colors disabled:opacity-50">
                   {loading ? 'Creating...' : 'Create Nonprofit'}
                 </button>
               </div>
@@ -192,21 +192,21 @@ export default function AdminPage() {
 
             {/* Orgs list */}
             <div>
-              <h2 className="text-lg font-semibold text-white mb-4">
+              <h2 className="text-lg font-semibold text-[#1C1917] mb-4">
                 All Nonprofits ({orgs.length})
               </h2>
               <div className="space-y-2">
                 {orgs.map(org => (
                   <div key={org.id}
-                    className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-4">
+                    className="bg-white border border-[#E7E5E4] rounded-xl px-4 py-4">
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="text-white font-medium">{org.name}</p>
-                        <p className="text-slate-400 text-sm">{org.address}</p>
-                        <p className="text-slate-500 text-xs mt-0.5">{org.email}</p>
+                        <p className="text-[#1C1917] font-medium">{org.name}</p>
+                        <p className="text-[#78716C] text-sm">{org.address}</p>
+                        <p className="text-[#A8A29E] text-xs mt-0.5">{org.email}</p>
                       </div>
                       <a href={`/admin/analytics?org=${org.id}`}
-                        className="text-blue-400 hover:text-blue-300 text-sm transition-colors">
+                        className="text-[#E07B54] hover:text-[#C96B44] text-sm transition-colors">
                         Analytics →
                       </a>
                     </div>
@@ -221,8 +221,8 @@ export default function AdminPage() {
         {activeTab === 'users' && (
           <div className="space-y-6">
             {/* Create user form */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-              <h2 className="text-lg font-semibold text-white">Create User</h2>
+            <div className="bg-white border border-[#E7E5E4] rounded-2xl p-6 space-y-4">
+              <h2 className="text-lg font-semibold text-[#1C1917]">Create User</h2>
               <div>
                 <label className={labelClass}>Full Name *</label>
                 <input type="text" placeholder="Jane Worker"
@@ -274,33 +274,33 @@ export default function AdminPage() {
               <button
                 onClick={handleCreateUser}
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-50">
+                className="w-full bg-[#E07B54] hover:bg-[#C96B44] text-[#1C1917] font-medium py-3 rounded-xl transition-colors disabled:opacity-50">
                 {loading ? 'Creating...' : 'Create User'}
               </button>
             </div>
 
             {/* Users list */}
             <div>
-              <h2 className="text-lg font-semibold text-white mb-4">
+              <h2 className="text-lg font-semibold text-[#1C1917] mb-4">
                 All Users ({staffList.length})
               </h2>
               <div className="space-y-2">
                 {staffList.map(s => (
                   <div key={s.id}
-                    className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 flex items-center justify-between">
+                    className="bg-white border border-[#E7E5E4] rounded-xl px-4 py-3 flex items-center justify-between">
                     <div>
-                      <p className="text-white font-medium">{s.full_name}</p>
-                      <p className="text-slate-400 text-sm">{s.email}</p>
-                      <p className="text-slate-600 text-xs">
+                      <p className="text-[#1C1917] font-medium">{s.full_name}</p>
+                      <p className="text-[#78716C] text-sm">{s.email}</p>
+                      <p className="text-[#A8A29E] text-xs">
                         {(s.organizations as any)?.name ?? 'No org'}
                       </p>
                     </div>
                     <span className={`text-xs px-3 py-1 rounded-full ${
                       s.role === 'super_admin'
-                        ? 'bg-blue-900 text-blue-300'
+                        ? 'bg-[#FEF3EC] text-[#C96B44]'
                         : s.role === 'nonprofit_admin'
                         ? 'bg-purple-900 text-purple-300'
-                        : 'bg-slate-800 text-slate-300'
+                        : 'bg-[#F5F3F0] text-[#57534E]'
                     }`}>
                       {s.role}
                     </span>

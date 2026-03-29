@@ -47,10 +47,10 @@ export default function AnalyticsSearch({ orgId, role }: Props) {
   }
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5">
+    <div className="bg-white border border-[#E7E5E4] rounded-2xl p-6 space-y-5">
       <div>
-        <h3 className="text-white font-semibold text-lg">Ask Analytics</h3>
-        <p className="text-slate-400 text-sm mt-1">
+        <h3 className="text-[#1C1917] font-semibold text-lg">Ask Analytics</h3>
+        <p className="text-[#78716C] text-sm mt-1">
           Ask questions about your clients in plain English
         </p>
       </div>
@@ -63,12 +63,12 @@ export default function AnalyticsSearch({ orgId, role }: Props) {
           onChange={e => setQuestion(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleAsk()}
           placeholder="e.g. How many male clients attended food distribution?"
-          className="flex-1 bg-slate-800 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500"
+          className="flex-1 bg-[#F5F3F0] border border-[#D6D3D1] text-[#1C1917] placeholder-[#C4BFB9] rounded-xl px-4 py-3 focus:outline-none focus:border-[#E07B54]"
         />
         <button
           onClick={() => handleAsk()}
           disabled={loading || !question.trim()}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-3 rounded-xl transition-colors disabled:opacity-50 shrink-0"
+          className="bg-[#E07B54] hover:bg-[#C96B44] text-[#1C1917] font-medium px-5 py-3 rounded-xl transition-colors disabled:opacity-50 shrink-0"
         >
           {loading ? (
             <span className="flex items-center gap-2">
@@ -81,13 +81,13 @@ export default function AnalyticsSearch({ orgId, role }: Props) {
 
       {/* Example questions */}
       <div>
-        <p className="text-slate-500 text-xs mb-2">Try asking:</p>
+        <p className="text-[#A8A29E] text-xs mb-2">Try asking:</p>
         <div className="flex flex-wrap gap-2">
           {EXAMPLE_QUESTIONS.map(q => (
             <button
               key={q}
               onClick={() => { setQuestion(q); handleAsk(q) }}
-              className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg transition-colors text-left"
+              className="text-xs bg-[#F5F3F0] hover:bg-[#E7E5E4] text-[#57534E] px-3 py-1.5 rounded-lg transition-colors text-left"
             >
               {q}
             </button>
@@ -102,19 +102,19 @@ export default function AnalyticsSearch({ orgId, role }: Props) {
 
       {/* Result */}
       {result && (
-        <div className="bg-slate-800 rounded-xl p-5 space-y-4">
+        <div className="bg-[#F5F3F0] rounded-xl p-5 space-y-4">
           {/* Interpretation */}
-          <p className="text-slate-400 text-sm italic">
+          <p className="text-[#78716C] text-sm italic">
             "{result.interpretation}"
           </p>
 
           {/* Count result */}
           {result.result.type === 'count' && (
             <div className="flex items-baseline gap-3">
-              <span className="text-5xl font-bold text-blue-400">
+              <span className="text-5xl font-bold text-[#E07B54]">
                 {result.result.value}
               </span>
-              <span className="text-slate-300 text-lg">
+              <span className="text-[#57534E] text-lg">
                 {result.result.label}
               </span>
             </div>
@@ -123,7 +123,7 @@ export default function AnalyticsSearch({ orgId, role }: Props) {
           {/* Breakdown result */}
           {result.result.type === 'breakdown' && (
             <div className="space-y-3">
-              <p className="text-slate-300 text-sm font-medium">
+              <p className="text-[#57534E] text-sm font-medium">
                 Breakdown {result.result.label}
               </p>
               {Object.entries(result.result.data)
@@ -138,13 +138,13 @@ export default function AnalyticsSearch({ orgId, role }: Props) {
                   return (
                     <div key={key}>
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-slate-300 text-sm">{key}</span>
-                        <span className="text-white font-medium text-sm">
+                        <span className="text-[#57534E] text-sm">{key}</span>
+                        <span className="text-[#1C1917] font-medium text-sm">
                           {value as number}
-                          <span className="text-slate-500 ml-1">({pct}%)</span>
+                          <span className="text-[#A8A29E] ml-1">({pct}%)</span>
                         </span>
                       </div>
-                      <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                      <div className="h-2 bg-[#E7E5E4] rounded-full overflow-hidden">
                         <div
                           className="h-full bg-blue-500 rounded-full transition-all duration-500"
                           style={{ width: `${pct}%` }}
