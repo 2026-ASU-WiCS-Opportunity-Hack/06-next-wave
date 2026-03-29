@@ -1,0 +1,142 @@
+import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { redirect } from 'next/navigation'
+import Shell from '@/components/layout/Shell'
+import Link from 'next/link'
+
+export default async function EventsPage() {
+  const supabase = await createServerSupabaseClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('*, organizations (name)')
+    .eq('id', user.id)
+    .single()
+
+  const role = profile?.role ?? 'staff'
+  const orgName = (profile?.organizations as any)?.name
+  const today = new Date().toISOString().split('T')[0]
+
+  let query = supabase
+    .from('events')
+    .select('*, service_types (name), organizations (name)')
+
+  if (role === 'nonprofit_admin') {
+    query = query.eq('org_id', profile?.org_id)
+  } else if (role === 'staff') {
+    const { data: assigned } = await supabase
+      .from('event_staff')
+      .select('event_id')
+      .eq('staff_id', user.id)
+    const ids = assigned?.map(e => e.event_id) ?? []
+    if (ids.length === 0) {
+      return (
+        <Shell role={role} orgName={orgName}>
+          <div className="space-y-6">
+            <h1 className="text-2xl font-bold text-white">Events</h1>
+            <div className="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center">
+              <p className="text-slate-400">No events assigned yet. Contact your org admin.</p>
+            </div>
+          </div>
+        </Shell>
+      )
+    }
+    query = query.in('id', ids)
+  }
+
+  const { data: allEvents } = await query
+
+  const upcoming = allEvents
+    ?.filter(e => e.event_date >= today)
+    .sort((a, b) => a.event_date.localeCompare(b.event_date)) ?? []
+
+  const past = allEvents
+    ?.filter(e => e.event_date < today)
+    .sort((a, b) => b.event_date.localeCompare(a.event_date)) ?? []
+
+  const EventCard = ({ event }: { event: any }) => (
+    <Link href={`/events/${event.id}`}>
+      <div className="bg-slate-900 border border-slate-800 hover:border-slate-600 rounded-xl p-5 transition-colors">
+        <div className="flex items-start justify-between">
+          <div className="space-y-1">
+            <p className="font-semibold text-white">{event.name}</p>
+            <p className="text-slate-400 text-sm">{event.location}</p>
+            {role === 'super_admin' && (
+              <p className="text-blue-400 text-xs">
+                {(event.organizations as any)?.name}
+              </p>
+            )}
+            {event.description && (
+              <p className="text-slate-500 text-sm">{event.description}</p>
+            )}
+          </div>
+          <div className="text-right space-y-2 shrink-0 ml-4">
+            <p className="text-sm text-white font-medium">
+              {new Date(event.event_date).toLocaleDateString('en-US', {
+                month: 'short', day: 'numeric', year: 'numeric'
+              })}
+            </p>
+            <span className="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full block">
+              {(event.service_types as any)?.name ?? 'General'}
+            </span>
+          </div>
+        </div>
+      </div>
+    </Link>
+  )
+
+  return (
+    <Shell role={role} orgName={orgName}>
+      <div className="space-y-8">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-white">Events</h1>
+          {['super_admin', 'nonprofit_admin'].includes(role) && (
+            <Link href="/events/new"
+              className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+              + New Event
+            </Link>
+          )}
+        </div>
+
+        {/* Upcoming */}
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="text-lg font-semibold text-white">Upcoming</h2>
+            <span className="bg-blue-900 text-blue-300 text-xs px-2 py-0.5 rounded-full">
+              {upcoming.length}
+            </span>
+          </div>
+          {upcoming.length === 0 ? (
+            <p className="text-slate-500 text-sm">No upcoming events</p>
+          ) : (
+            <div className="grid gap-3">
+              {upcoming.map(event => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Past */}
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="text-lg font-semibold text-white">Past Events</h2>
+            <span className="bg-slate-800 text-slate-400 text-xs px-2 py-0.5 rounded-full">
+              {past.length}
+            </span>
+          </div>
+          {past.length === 0 ? (
+            <p className="text-slate-500 text-sm">No past events</p>
+          ) : (
+            <div className="grid gap-3 opacity-75">
+              {past.map(event => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </Shell>
+  )
+}
