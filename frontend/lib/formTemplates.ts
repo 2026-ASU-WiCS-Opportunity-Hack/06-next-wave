@@ -30,7 +30,7 @@ export const translations: Record<string, Record<Language, string>> = {
 
 export type DynamicField = {
   key: string
-  type: 'text' | 'number' | 'select' | 'boolean'
+  type: 'text' | 'number' | 'select' | 'boolean' | 'textarea'
   options?: string[]
   required?: boolean
 }
