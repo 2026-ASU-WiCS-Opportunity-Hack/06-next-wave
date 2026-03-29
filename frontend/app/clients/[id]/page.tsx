@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Shell from '@/components/layout/Shell'
 import Link from 'next/link'
 import DeleteClientButton from '@/components/DeleteClientButton'
-
+export const dynamic = 'force-dynamic'
 export default async function ClientProfilePage({
   params,
 }: {
