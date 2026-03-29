@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Shell from '@/components/layout/Shell'
+import CsvImport from '@/components/CsvImport'
+import AuditLogView from '@/components/AuditLogView'
 
 export default function AdminPage() {
   const supabase = createClient()
@@ -12,7 +14,7 @@ export default function AdminPage() {
   const [staffList, setStaffList] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
-  const [activeTab, setActiveTab] = useState<'users' | 'nonprofits'>('nonprofits')
+  const [activeTab, setActiveTab] = useState<'nonprofits' | 'users' | 'data'>('nonprofits')
 
   const [userForm, setUserForm] = useState({
     email: '', password: '', full_name: '', role: 'staff', org_id: ''
@@ -57,11 +59,7 @@ export default function AdminPage() {
     if (!orgForm.name) return
     setLoading(true)
     setMessage('')
-
-    const { error } = await supabase
-      .from('organizations')
-      .insert(orgForm)
-
+    const { error } = await supabase.from('organizations').insert(orgForm)
     if (error) {
       setMessage(error.message)
     } else {
@@ -80,14 +78,12 @@ export default function AdminPage() {
     }
     setLoading(true)
     setMessage('')
-
     const res = await fetch('/api/admin/create-user', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userForm),
     })
     const data = await res.json()
-
     if (!res.ok) {
       setMessage(data.error ?? 'Failed to create user')
     } else {
@@ -104,8 +100,11 @@ export default function AdminPage() {
 
   if (!profile) return null
 
-  const inputClass = "w-full bg-[#F5F3F0] border border-[#D6D3D1] text-[#1C1917] placeholder-[#C4BFB9] rounded-xl px-4 py-3 focus:outline-none focus:border-[#E07B54]"
-  const labelClass = "text-sm text-[#78716C] mb-1 block"
+  const inputClass = "w-full bg-white border-2 border-[#E7E5E4] text-[#1C1917] placeholder-[#C4BFB9] rounded-xl px-4 py-3 focus:outline-none focus:border-[#E07B54] transition-colors text-sm"
+  const labelClass = "text-sm font-medium text-[#1C1917] mb-1.5 block"
+
+  const clientsExportUrl = `/api/export/clients${profile.org_id ? `?org_id=${profile.org_id}` : ''}`
+  const servicesExportUrl = `/api/export/services${profile.org_id ? `?org_id=${profile.org_id}` : ''}`
 
   return (
     <Shell role={profile.role}>
@@ -113,13 +112,13 @@ export default function AdminPage() {
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-[#1C1917]">Admin Panel</h1>
           <a href="/admin/analytics"
-            className="bg-[#F5F3F0] hover:bg-[#E7E5E4] text-[#57534E] text-sm px-4 py-2 rounded-lg transition-colors">
-            📊 Analytics
+            className="bg-[#F5F3F0] hover:bg-[#E7E5E4] text-[#57534E] text-sm px-4 py-2 rounded-lg transition-colors border border-[#E7E5E4]">
+            Analytics
           </a>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 bg-[#F5F3F0] rounded-xl p-1 w-fit">
+        <div className="flex gap-1 bg-[#F5F3F0] rounded-xl p-1 w-fit border border-[#E7E5E4]">
           {[
             { key: 'nonprofits', label: 'Nonprofits' },
             { key: 'users', label: 'Users' },
@@ -130,7 +129,7 @@ export default function AdminPage() {
               onClick={() => setActiveTab(tab.key as any)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeTab === tab.key
-                  ? 'bg-[#E07B54] text-[#1C1917]'
+                  ? 'bg-[#E07B54] text-white'
                   : 'text-[#78716C] hover:text-[#1C1917]'
               }`}
             >
@@ -140,7 +139,7 @@ export default function AdminPage() {
         </div>
 
         {message && (
-          <p className={`text-sm ${message.startsWith('✓') ? 'text-green-400' : 'text-red-400'}`}>
+          <p className={`text-sm ${message.startsWith('✓') ? 'text-green-600' : 'text-red-500'}`}>
             {message}
           </p>
         )}
@@ -148,9 +147,8 @@ export default function AdminPage() {
         {/* Nonprofits Tab */}
         {activeTab === 'nonprofits' && (
           <div className="space-y-6">
-            {/* Create org form */}
             {profile.role === 'super_admin' && (
-              <div className="bg-white border border-[#E7E5E4] rounded-2xl p-6 space-y-4">
+              <div className="bg-white border-2 border-[#E7E5E4] rounded-2xl p-6 space-y-4">
                 <h2 className="text-lg font-semibold text-[#1C1917]">Add Nonprofit</h2>
                 <div>
                   <label className={labelClass}>Organization Name *</label>
@@ -185,13 +183,12 @@ export default function AdminPage() {
                 <button
                   onClick={handleCreateOrg}
                   disabled={loading || !orgForm.name}
-                  className="w-full bg-[#E07B54] hover:bg-[#C96B44] text-[#1C1917] font-medium py-3 rounded-xl transition-colors disabled:opacity-50">
+                  className="w-full bg-[#E07B54] hover:bg-[#C96B44] text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-50 text-sm">
                   {loading ? 'Creating...' : 'Create Nonprofit'}
                 </button>
               </div>
             )}
 
-            {/* Orgs list */}
             <div>
               <h2 className="text-lg font-semibold text-[#1C1917] mb-4">
                 All Nonprofits ({orgs.length})
@@ -199,7 +196,7 @@ export default function AdminPage() {
               <div className="space-y-2">
                 {orgs.map(org => (
                   <div key={org.id}
-                    className="bg-white border border-[#E7E5E4] rounded-xl px-4 py-4">
+                    className="bg-white border-2 border-[#E7E5E4] rounded-xl px-5 py-4">
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="text-[#1C1917] font-medium">{org.name}</p>
@@ -208,7 +205,7 @@ export default function AdminPage() {
                       </div>
                       <a href={`/admin/analytics?org=${org.id}`}
                         className="text-[#E07B54] hover:text-[#C96B44] text-sm transition-colors">
-                        Analytics →
+                        Analytics
                       </a>
                     </div>
                   </div>
@@ -221,8 +218,7 @@ export default function AdminPage() {
         {/* Users Tab */}
         {activeTab === 'users' && (
           <div className="space-y-6">
-            {/* Create user form */}
-            <div className="bg-white border border-[#E7E5E4] rounded-2xl p-6 space-y-4">
+            <div className="bg-white border-2 border-[#E7E5E4] rounded-2xl p-6 space-y-4">
               <h2 className="text-lg font-semibold text-[#1C1917]">Create User</h2>
               <div>
                 <label className={labelClass}>Full Name *</label>
@@ -275,12 +271,11 @@ export default function AdminPage() {
               <button
                 onClick={handleCreateUser}
                 disabled={loading}
-                className="w-full bg-[#E07B54] hover:bg-[#C96B44] text-[#1C1917] font-medium py-3 rounded-xl transition-colors disabled:opacity-50">
+                className="w-full bg-[#E07B54] hover:bg-[#C96B44] text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-50 text-sm">
                 {loading ? 'Creating...' : 'Create User'}
               </button>
             </div>
 
-            {/* Users list */}
             <div>
               <h2 className="text-lg font-semibold text-[#1C1917] mb-4">
                 All Users ({staffList.length})
@@ -288,7 +283,7 @@ export default function AdminPage() {
               <div className="space-y-2">
                 {staffList.map(s => (
                   <div key={s.id}
-                    className="bg-white border border-[#E7E5E4] rounded-xl px-4 py-3 flex items-center justify-between">
+                    className="bg-white border-2 border-[#E7E5E4] rounded-xl px-5 py-3 flex items-center justify-between">
                     <div>
                       <p className="text-[#1C1917] font-medium">{s.full_name}</p>
                       <p className="text-[#78716C] text-sm">{s.email}</p>
@@ -296,11 +291,11 @@ export default function AdminPage() {
                         {(s.organizations as any)?.name ?? 'No org'}
                       </p>
                     </div>
-                    <span className={`text-xs px-3 py-1 rounded-full ${
+                    <span className={`text-xs px-3 py-1 rounded-full font-medium ${
                       s.role === 'super_admin'
-                        ? 'bg-[#FEF3EC] text-[#C96B44]'
+                        ? 'bg-blue-100 text-blue-700'
                         : s.role === 'nonprofit_admin'
-                        ? 'bg-purple-900 text-purple-300'
+                        ? 'bg-purple-100 text-purple-700'
                         : 'bg-[#F5F3F0] text-[#57534E]'
                     }`}>
                       {s.role}
@@ -309,6 +304,52 @@ export default function AdminPage() {
                 ))}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Data & Audit Tab */}
+        {activeTab === 'data' && (
+          <div className="space-y-6">
+
+            {/* Export */}
+            <div className="bg-white border-2 border-[#E7E5E4] rounded-2xl p-6 space-y-4">
+              <h2 className="text-lg font-semibold text-[#1C1917]">Export Data</h2>
+              <p className="text-sm text-[#78716C]">
+                Download all data as CSV for grant reporting or migration to another system.
+              </p>
+              <div className="flex gap-3 flex-wrap">
+                <a
+                  href={clientsExportUrl}
+                  download="carevo_clients.csv"
+                  className="bg-[#E07B54] hover:bg-[#C96B44] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors"
+                >
+                  Download Clients CSV
+                </a>
+                <a
+                  href={servicesExportUrl}
+                  download="carevo_service_entries.csv"
+                  className="bg-[#1C1917] hover:bg-[#292524] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors"
+                >
+                  Download Service Entries CSV
+                </a>
+              </div>
+            </div>
+
+            {/* Import */}
+            <div className="bg-white border-2 border-[#E7E5E4] rounded-2xl p-6 space-y-4">
+              <h2 className="text-lg font-semibold text-[#1C1917]">Import Clients from CSV</h2>
+              <p className="text-sm text-[#78716C]">
+                Upload a CSV with columns:{' '}
+                <code className="bg-[#F5F3F0] px-1.5 py-0.5 rounded text-xs">
+                  full_name, dob, phone, email, location, gender, language, household_size
+                </code>
+              </p>
+              <CsvImport orgId={profile.org_id} userId={profile.id} />
+            </div>
+
+            {/* Audit Log */}
+            <AuditLogView orgId={profile.org_id} role={profile.role} />
+
           </div>
         )}
       </div>

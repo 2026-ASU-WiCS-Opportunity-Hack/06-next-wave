@@ -1,73 +1,162 @@
-import { createClient } from '@supabase/supabase-js'
+import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+// Known fixed columns on the clients table
+const FIXED_COLUMNS = new Set(['full_name', 'dob', 'phone', 'email'])
+
+// These go into demographics JSONB — everything else does too
+const KNOWN_DEMO_FIELDS = new Set([
+  'gender', 'language', 'household_size', 'dietary_restrictions',
+  'location', 'id_available', 'current_situation', 'emergency_contact',
+  'guardian_name', 'guardian_phone', 'age', 'condition', 'insurance',
+  'immediate_need', 'safe_location', 'family_size', 'pets',
+  'dietary_restrictions', 'school'
+])
+
+function parseCSV(text: string): { headers: string[], rows: string[][] } {
+  const lines = text.split('\n').filter(l => l.trim())
+  if (lines.length < 2) return { headers: [], rows: [] }
+
+  const parseRow = (line: string): string[] => {
+    const result: string[] = []
+    let current = ''
+    let inQuotes = false
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i]
+      if (char === '"') {
+        if (inQuotes && line[i + 1] === '"') {
+          current += '"'
+          i++
+        } else {
+          inQuotes = !inQuotes
+        }
+      } else if (char === ',' && !inQuotes) {
+        result.push(current.trim())
+        current = ''
+      } else {
+        current += char
+      }
+    }
+    result.push(current.trim())
+    return result
+  }
+
+  const headers = parseRow(lines[0]).map(h => h.toLowerCase().replace(/\s+/g, '_'))
+  const rows = lines.slice(1).map(parseRow)
+  return { headers, rows }
+}
+
 export async function POST(request: Request) {
+  const supabase = await createServerSupabaseClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, org_id')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile || !['super_admin', 'nonprofit_admin'].includes(profile.role)) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
   const { searchParams } = new URL(request.url)
-  const orgId = searchParams.get('org_id')
-  const userId = searchParams.get('user_id')
+  const orgId = searchParams.get('org_id') ?? profile.org_id
 
   const formData = await request.formData()
   const file = formData.get('file') as File
-  if (!file) {
-    return NextResponse.json({ error: 'No file provided' }, { status: 400 })
-  }
+  if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 })
 
   const text = await file.text()
-  const lines = text.split('\n').filter(l => l.trim())
-  if (lines.length < 2) {
-    return NextResponse.json({ error: 'CSV must have header + at least one row' }, { status: 400 })
+  const { headers, rows } = parseCSV(text)
+
+  if (headers.length === 0) {
+    return NextResponse.json({ error: 'CSV must have a header row' }, { status: 400 })
   }
 
-  const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, '').toLowerCase())
-  const rows = lines.slice(1)
+  if (!headers.includes('full_name') && !headers.includes('name')) {
+    return NextResponse.json({
+      error: 'CSV must have a full_name (or name) column'
+    }, { status: 400 })
+  }
 
-  const clients = rows.map(row => {
-    const values = row.match(/(".*?"|[^,]+)(?=,|$)/g)?.map(v =>
-      v.trim().replace(/^"|"$/g, '').replace(/""/g, '"')
-    ) ?? []
+  const get = (row: string[], key: string): string => {
+    const idx = headers.indexOf(key)
+    return idx >= 0 ? (row[idx] ?? '').trim() : ''
+  }
 
-    const get = (key: string) => {
-      const idx = headers.indexOf(key)
-      return idx >= 0 ? values[idx] ?? '' : ''
-    }
+  const clients = rows
+    .map(row => {
+      const fullName = get(row, 'full_name') || get(row, 'name')
+      if (!fullName) return null
 
-    return {
-      full_name: get('full_name') || get('name'),
-      dob: get('dob') || null,
-      phone: get('phone') || null,
-      email: get('email') || null,
-      location: get('location') || null,
-      demographics: {
-        gender: get('gender') || null,
-        language: get('language') || null,
-        household_size: get('household_size') ? Number(get('household_size')) : null,
-        dietary_restrictions: get('dietary_restrictions') || null,
-      },
-      org_id: orgId,
-      created_by: userId,
-    }
-  }).filter(c => c.full_name)
+      // Build demographics from ALL non-fixed columns
+      const demographics: Record<string, any> = {}
+      headers.forEach((header, idx) => {
+        if (FIXED_COLUMNS.has(header)) return
+        if (header === 'name') return
+        const val = (row[idx] ?? '').trim()
+        if (val) {
+          // Convert household_size to number if possible
+          if (header === 'household_size' || header === 'age' || header === 'family_size') {
+            const num = Number(val)
+            demographics[header] = isNaN(num) ? val : num
+          } else {
+            demographics[header] = val
+          }
+        }
+      })
+
+      return {
+        full_name: fullName,
+        dob: get(row, 'dob') || null,
+        phone: get(row, 'phone') || null,
+        email: get(row, 'email') || null,
+        demographics,
+        org_id: orgId ?? null,
+        created_by: user.id,
+      }
+    })
+    .filter(Boolean)
 
   if (clients.length === 0) {
-    return NextResponse.json({ error: 'No valid clients found in CSV' }, { status: 400 })
+    return NextResponse.json({ error: 'No valid rows found (missing full_name)' }, { status: 400 })
   }
 
-  const { data, error } = await supabaseAdmin
-    .from('clients')
-    .insert(clients)
-    .select('id')
+  // Insert in batches of 50 to avoid payload limits
+  let imported = 0
+  const batchSize = 50
+  for (let i = 0; i < clients.length; i += batchSize) {
+    const batch = clients.slice(i, i + batchSize)
+    const { data, error } = await supabaseAdmin
+      .from('clients')
+      .insert(batch)
+      .select('id')
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) {
+      console.error('Import batch error:', error)
+      return NextResponse.json({
+        error: `Import failed on batch starting at row ${i + 1}: ${error.message}`
+      }, { status: 500 })
+    }
+    imported += data?.length ?? 0
   }
 
-  return NextResponse.json({
-    success: true,
-    imported: data?.length ?? 0,
+  // Audit log
+  await supabaseAdmin.from('audit_logs').insert({
+    action: 'client.import',
+    table_name: 'clients',
+    user_id: user.id,
+    org_id: orgId ?? null,
+    summary: `Imported ${imported} clients via CSV`,
   })
+
+  return NextResponse.json({ success: true, imported })
 }
