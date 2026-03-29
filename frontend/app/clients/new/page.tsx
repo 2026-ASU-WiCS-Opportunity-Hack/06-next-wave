@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { serviceTypeFields, t, type Language, type DynamicField } from '@/lib/formTemplates'
 import VoiceIntake from '@/components/VoiceIntake'
-
-export default function NewClientPage() {
+import { Suspense } from 'react'
+function NewClientPageInner() {
   const supabase = createClient()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -549,5 +549,15 @@ if (!authChecked) return null
         )}
       </div>
     </div>
+  )
+}export default function NewClientPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FDFAF6] flex items-center justify-center">
+        <p className="text-[#A8A29E]">Loading...</p>
+      </div>
+    }>
+      <NewClientPageInner />
+    </Suspense>
   )
 }
