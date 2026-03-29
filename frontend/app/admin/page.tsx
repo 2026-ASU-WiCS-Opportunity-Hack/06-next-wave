@@ -13,6 +13,7 @@ export default function AdminPage() {
   const [orgs, setOrgs] = useState<any[]>([])
   const [staffList, setStaffList] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
+  const [downloading, setDownloading] = useState<string | null>(null)
   const [message, setMessage] = useState('')
   const [activeTab, setActiveTab] = useState<'nonprofits' | 'users' | 'data'>('nonprofits')
 
@@ -98,13 +99,41 @@ export default function AdminPage() {
     setLoading(false)
   }
 
+  const handleDownload = async (type: 'clients' | 'services') => {
+    setDownloading(type)
+    try {
+      const orgParam = profile.org_id ? `?org_id=${profile.org_id}` : ''
+      const url = type === 'clients'
+        ? `/api/export/clients${orgParam}`
+        : `/api/export/services${orgParam}`
+
+      const res = await fetch(url)
+      if (!res.ok) {
+        setMessage('Export failed — check that the export route files exist')
+        setDownloading(null)
+        return
+      }
+
+      const blob = await res.blob()
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
+      link.download = type === 'clients'
+        ? 'carevo_clients.csv'
+        : 'carevo_service_entries.csv'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(link.href)
+    } catch (err) {
+      setMessage('Download failed')
+    }
+    setDownloading(null)
+  }
+
   if (!profile) return null
 
   const inputClass = "w-full bg-white border-2 border-[#E7E5E4] text-[#1C1917] placeholder-[#C4BFB9] rounded-xl px-4 py-3 focus:outline-none focus:border-[#E07B54] transition-colors text-sm"
   const labelClass = "text-sm font-medium text-[#1C1917] mb-1.5 block"
-
-  const clientsExportUrl = `/api/export/clients${profile.org_id ? `?org_id=${profile.org_id}` : ''}`
-  const servicesExportUrl = `/api/export/services${profile.org_id ? `?org_id=${profile.org_id}` : ''}`
 
   return (
     <Shell role={profile.role}>
@@ -318,20 +347,20 @@ export default function AdminPage() {
                 Download all data as CSV for grant reporting or migration to another system.
               </p>
               <div className="flex gap-3 flex-wrap">
-                <a
-                  href={clientsExportUrl}
-                  download="carevo_clients.csv"
-                  className="bg-[#E07B54] hover:bg-[#C96B44] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors"
+                <button
+                  onClick={() => handleDownload('clients')}
+                  disabled={downloading === 'clients'}
+                  className="bg-[#E07B54] hover:bg-[#C96B44] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors disabled:opacity-60"
                 >
-                  Download Clients CSV
-                </a>
-                <a
-                  href={servicesExportUrl}
-                  download="carevo_service_entries.csv"
-                  className="bg-[#1C1917] hover:bg-[#292524] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors"
+                  {downloading === 'clients' ? 'Downloading...' : 'Download Clients CSV'}
+                </button>
+                <button
+                  onClick={() => handleDownload('services')}
+                  disabled={downloading === 'services'}
+                  className="bg-[#1C1917] hover:bg-[#292524] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors disabled:opacity-60"
                 >
-                  Download Service Entries CSV
-                </a>
+                  {downloading === 'services' ? 'Downloading...' : 'Download Service Entries CSV'}
+                </button>
               </div>
             </div>
 
@@ -339,10 +368,10 @@ export default function AdminPage() {
             <div className="bg-white border-2 border-[#E7E5E4] rounded-2xl p-6 space-y-4">
               <h2 className="text-lg font-semibold text-[#1C1917]">Import Clients from CSV</h2>
               <p className="text-sm text-[#78716C]">
-                Upload a CSV with columns:{' '}
-                <code className="bg-[#F5F3F0] px-1.5 py-0.5 rounded text-xs">
-                  full_name, dob, phone, email, location, gender, language, household_size
-                </code>
+                Upload any CSV with client data. Only{' '}
+                <code className="bg-[#F5F3F0] px-1.5 py-0.5 rounded text-xs">full_name</code>
+                {' '}is required — all other columns are imported automatically.
+                Extra columns go into the demographics record.
               </p>
               <CsvImport orgId={profile.org_id} userId={profile.id} />
             </div>
