@@ -89,10 +89,10 @@ export default function NewClientPage() {
           await loadFormSchema(stId, stName)
         }
       } else {
-        if (p?.role === 'staff') {
-          router.push('/events')
-          return
-        }
+        if (p?.role === 'staff' && !eventId) {
+  router.push('/events')
+  return
+}
 
         let evQuery = supabase
           .from('events')
@@ -211,7 +211,6 @@ export default function NewClientPage() {
         dob: form.dob || null,
         phone: form.phone || null,
         email: form.email || null,
-        location: form.location || null,
         demographics: fullDemographics,
         org_id: profile?.org_id ?? event?.org_id ?? null,
         created_by: user?.id,

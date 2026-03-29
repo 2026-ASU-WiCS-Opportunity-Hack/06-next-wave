@@ -157,6 +157,15 @@ export async function POST(request: Request) {
     org_id: orgId ?? null,
     summary: `Imported ${imported} clients via CSV`,
   })
+  // After successful import, get the org_id from the first client's org
+// not from the user's profile (super_admin has no org)
+await supabaseAdmin.from('audit_logs').insert({
+  action: 'client.import',
+  table_name: 'clients',
+  user_id: user.id,
+  org_id: orgId ?? null,  // orgId comes from the ?org_id= param
+  summary: `Imported ${imported} clients via CSV`,
+})
 
   return NextResponse.json({ success: true, imported })
 }

@@ -27,14 +27,17 @@ export async function GET(request: Request) {
 
   let query = supabaseAdmin
     .from('clients')
-    .select('full_name, dob, phone, email, location, demographics, created_at')
+    .select('full_name, dob, phone, email, demographics, created_at')
     .order('created_at', { ascending: false })
 
   if (orgId) query = query.eq('org_id', orgId)
 
   const { data: clients, error } = await query
 
-  if (error) return new NextResponse('Error fetching data', { status: 500 })
+  if (error) {
+    console.error('Export error:', error)
+    return new NextResponse(`Error: ${error.message}`, { status: 500 })
+  }
 
   const headers = [
     'full_name', 'dob', 'phone', 'email', 'location',
@@ -47,7 +50,7 @@ export async function GET(request: Request) {
     c.dob ?? '',
     c.phone ?? '',
     c.email ?? '',
-    c.location ?? c.demographics?.location ?? '',
+    c.demographics?.location ?? '',
     c.demographics?.gender ?? '',
     c.demographics?.language ?? '',
     c.demographics?.household_size ?? '',
