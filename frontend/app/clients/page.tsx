@@ -2,7 +2,7 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Shell from '@/components/layout/Shell'
 import Link from 'next/link'
-
+export const dynamic = 'force-dynamic'
 export default async function ClientsPage({
   searchParams,
 }: {
