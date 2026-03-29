@@ -10,7 +10,7 @@ export default function Shell({
   orgName?: string
 }) {
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-[#FDFAF6]">
       <Navbar role={role} orgName={orgName} />
       <main className="max-w-6xl mx-auto px-6 py-8">
         {children}

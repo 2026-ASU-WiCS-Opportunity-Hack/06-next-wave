@@ -32,17 +32,26 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#FDFAF6] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white mb-2">CareTrack</h1>
-          <p className="text-slate-400">Nonprofit Case Management</p>
+
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 mb-4">
+            <div className="w-10 h-10 bg-[#E07B54] rounded-xl flex items-center justify-center">
+              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+              </svg>
+            </div>
+            <span className="font-bold text-2xl text-[#1C1917]">CareVo</span>
+          </div>
+          <p className="text-[#78716C]">Sign in to your organization</p>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-4">
+        <div className="bg-white border border-[#E7E5E4] rounded-2xl p-8 shadow-sm space-y-4">
           <button
             onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 bg-white text-slate-900 font-medium py-3 px-4 rounded-xl hover:bg-slate-100 transition-colors"
+            className="w-full flex items-center justify-center gap-3 bg-white text-[#1C1917] font-medium py-3 px-4 rounded-xl border border-[#E7E5E4] hover:bg-[#F5F3F0] transition-colors"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -54,9 +63,9 @@ export default function LoginPage() {
           </button>
 
           <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-slate-700" />
-            <span className="text-slate-500 text-sm">or</span>
-            <div className="flex-1 h-px bg-slate-700" />
+            <div className="flex-1 h-px bg-[#E7E5E4]" />
+            <span className="text-[#A8A29E] text-sm">or</span>
+            <div className="flex-1 h-px bg-[#E7E5E4]" />
           </div>
 
           <input
@@ -65,7 +74,7 @@ export default function LoginPage() {
             value={email}
             onChange={e => setEmail(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleEmailLogin()}
-            className="w-full bg-slate-800 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500"
+            className="w-full bg-[#FDFAF6] border border-[#E7E5E4] text-[#1C1917] placeholder-[#A8A29E] rounded-xl px-4 py-3 focus:outline-none focus:border-[#E07B54] transition-colors"
           />
           <input
             type="password"
@@ -73,19 +82,27 @@ export default function LoginPage() {
             value={password}
             onChange={e => setPassword(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleEmailLogin()}
-            className="w-full bg-slate-800 border border-slate-700 text-white placeholder-slate-500 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500"
+            className="w-full bg-[#FDFAF6] border border-[#E7E5E4] text-[#1C1917] placeholder-[#A8A29E] rounded-xl px-4 py-3 focus:outline-none focus:border-[#E07B54] transition-colors"
           />
 
-          {message && <p className="text-red-400 text-sm">{message}</p>}
+          {message && (
+            <p className="text-red-500 text-sm">{message}</p>
+          )}
 
           <button
             onClick={handleEmailLogin}
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-50"
+            className="w-full bg-[#E07B54] hover:bg-[#C96B44] text-white font-medium py-3 rounded-xl transition-colors disabled:opacity-50"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </div>
+
+        <p className="text-center text-xs text-[#A8A29E] mt-6">
+          Built at{' '}
+          <a href="https://ohack.dev" className="text-[#E07B54]">Opportunity Hack 2026</a>
+          {' '}· WiCS x OHack
+        </p>
       </div>
     </div>
   )

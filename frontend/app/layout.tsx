@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${geist.className} bg-slate-950 text-white`}>
+      <body className={`${geist.className} bg-[#FDFAF6] text-[#1C1917]`}>
         {children}
       </body>
     </html>
