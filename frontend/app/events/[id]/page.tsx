@@ -52,6 +52,11 @@ export default async function EventDetailPage({
       clientMap.set(e.clients.id, e.clients)
     }
   })
+  // Get clients pre-registered for this event
+const { data: preRegistered } = await supabase
+  .from('client_event_registrations')
+  .select('clients (id, full_name, phone)')
+  .eq('event_id', id)
   const myClients = Array.from(clientMap.values())
 
   return (
@@ -135,7 +140,23 @@ export default async function EventDetailPage({
             )}
           </div>
         </div>
-
+        {/* Pre-registered clients */}
+{preRegistered && preRegistered.length > 0 && (
+  <div>
+    <h2 className="text-base font-semibold text-[#1C1917] mb-3">
+      Pre-registered ({preRegistered.length})
+    </h2>
+    <div className="flex gap-2 flex-wrap">
+      {preRegistered.map((r: any) => (
+        <Link key={r.clients.id} href={`/clients/${r.clients.id}`}>
+          <span className="bg-[#FEF3EC] text-[#E07B54] text-sm px-3 py-1.5 rounded-full hover:bg-[#F5C5A3] transition-colors">
+            {r.clients.full_name}
+          </span>
+        </Link>
+      ))}
+    </div>
+  </div>
+)}
         {/* Clients */}
         <div>
           <div className="flex items-center justify-between mb-4">

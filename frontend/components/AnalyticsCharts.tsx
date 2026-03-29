@@ -1,5 +1,31 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js'
+import { Line, Bar, Doughnut } from 'react-chartjs-2'
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+)
 
 interface Props {
   clientsPerType: { name: string; count: number }[]
@@ -10,162 +36,321 @@ interface Props {
   statsPerType: { name: string; total_entries: number; unique_clients: number }[]
 }
 
-const COLORS = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4', '#ec4899', '#84cc16']
-
-function BarChart({ data, label }: { data: { label: string; count: number }[], label: string }) {
-  const max = Math.max(...data.map(d => d.count), 1)
-  return (
-    <div className="bg-white border border-[#E7E5E4] rounded-xl p-5">
-      <h3 className="text-[#1C1917] font-semibold mb-4">{label}</h3>
-      <div className="space-y-3">
-        {data.map((d, i) => (
-          <div key={d.label}>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[#57534E] text-sm truncate max-w-[60%]">{d.label}</span>
-              <span className="text-[#78716C] text-sm">{d.count}</span>
-            </div>
-            <div className="h-2 bg-[#F5F3F0] rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-500"
-                style={{
-                  width: `${(d.count / max) * 100}%`,
-                  backgroundColor: COLORS[i % COLORS.length]
-                }}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function DonutChart({ data, label }: { data: { label: string; count: number }[], label: string }) {
-  const total = data.reduce((sum, d) => sum + d.count, 0)
-  return (
-    <div className="bg-white border border-[#E7E5E4] rounded-xl p-5">
-      <h3 className="text-[#1C1917] font-semibold mb-4">{label}</h3>
-      <div className="space-y-2">
-        {data.map((d, i) => {
-          const pct = total > 0 ? Math.round((d.count / total) * 100) : 0
-          return (
-            <div key={d.label} className="flex items-center gap-3">
-              <div
-                className="w-3 h-3 rounded-full shrink-0"
-                style={{ backgroundColor: COLORS[i % COLORS.length] }}
-              />
-              <div className="flex-1 flex items-center justify-between">
-                <span className="text-[#57534E] text-sm truncate">{d.label}</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-16 h-1.5 bg-[#F5F3F0] rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${pct}%`,
-                        backgroundColor: COLORS[i % COLORS.length]
-                      }}
-                    />
-                  </div>
-                  <span className="text-[#78716C] text-xs w-8 text-right">{pct}%</span>
-                </div>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-      <p className="text-[#A8A29E] text-xs mt-3">Total: {total}</p>
-    </div>
-  )
-}
-
-function TrendChart({ data }: { data: { label: string; date: string; count: number }[] }) {
-  const max = Math.max(...data.map(d => d.count), 1)
-  return (
-    <div className="bg-white border border-[#E7E5E4] rounded-xl p-5">
-      <h3 className="text-[#1C1917] font-semibold mb-4">Weekly Service Entries (Last 8 Weeks)</h3>
-      <div className="flex items-end gap-2 h-32">
-        {data.map((d, i) => (
-          <div key={d.label} className="flex-1 flex flex-col items-center gap-1">
-            <span className="text-[#78716C] text-xs">{d.count}</span>
-            <div
-              className="w-full rounded-t-sm transition-all duration-500"
-              style={{
-                height: `${Math.max((d.count / max) * 100, 4)}%`,
-                backgroundColor: i === data.length - 1 ? '#3b82f6' : '#334155',
-                minHeight: '4px'
-              }}
-            />
-            <span className="text-[#A8A29E] text-xs">{d.date}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
+const CORAL = '#E07B54'
+const CORAL_LIGHT = 'rgba(224, 123, 84, 0.15)'
+const STONE = '#78716C'
+const COLORS = [
+  '#E07B54', '#2DD4BF', '#818CF8', '#FB923C',
+  '#34D399', '#60A5FA', '#F472B6', '#A78BFA'
+]
 
 export default function AnalyticsCharts({
-  clientsPerType, ageData, genderData, languageData, weeklyTrend, statsPerType
+  clientsPerType,
+  ageData,
+  genderData,
+  languageData,
+  weeklyTrend,
+  statsPerType,
 }: Props) {
+
+  // Line chart — weekly trend
+  const lineData = {
+    labels: weeklyTrend.map(w => w.date),
+    datasets: [{
+      label: 'Service Entries',
+      data: weeklyTrend.map(w => w.count),
+      borderColor: CORAL,
+      backgroundColor: CORAL_LIGHT,
+      borderWidth: 2.5,
+      pointBackgroundColor: CORAL,
+      pointBorderColor: '#fff',
+      pointBorderWidth: 2,
+      pointRadius: 5,
+      pointHoverRadius: 7,
+      fill: true,
+      tension: 0.4,
+    }]
+  }
+
+  const lineOptions = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1C1917',
+        titleColor: '#FDFAF6',
+        bodyColor: '#A8A29E',
+        padding: 12,
+        cornerRadius: 8,
+      },
+    },
+    scales: {
+      x: {
+        grid: { color: '#F5F3F0' },
+        ticks: { color: STONE, font: { size: 11 } },
+        border: { color: '#E7E5E4' },
+      },
+      y: {
+        grid: { color: '#F5F3F0' },
+        ticks: { color: STONE, font: { size: 11 }, stepSize: 1 },
+        border: { color: '#E7E5E4' },
+        beginAtZero: true,
+      },
+    },
+  }
+
+  // Bar chart — clients per service type
+  const barData = {
+    labels: clientsPerType.map(d => d.name),
+    datasets: [{
+      label: 'Unique Clients',
+      data: clientsPerType.map(d => d.count),
+      backgroundColor: clientsPerType.map((_, i) => COLORS[i % COLORS.length]),
+      borderRadius: 8,
+      borderSkipped: false,
+    }]
+  }
+
+  const barOptions = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1C1917',
+        titleColor: '#FDFAF6',
+        bodyColor: '#A8A29E',
+        padding: 12,
+        cornerRadius: 8,
+      },
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: STONE, font: { size: 11 } },
+        border: { color: '#E7E5E4' },
+      },
+      y: {
+        grid: { color: '#F5F3F0' },
+        ticks: { color: STONE, font: { size: 11 }, stepSize: 1 },
+        border: { color: '#E7E5E4' },
+        beginAtZero: true,
+      },
+    },
+  }
+
+  // Age bar chart
+  const ageBarData = {
+    labels: ageData.filter(d => d.count > 0).map(d => d.label),
+    datasets: [{
+      label: 'Clients',
+      data: ageData.filter(d => d.count > 0).map(d => d.count),
+      backgroundColor: '#818CF8',
+      borderRadius: 6,
+      borderSkipped: false,
+    }]
+  }
+
+  // Doughnut — gender
+  const genderFiltered = genderData.filter(d => d.count > 0)
+  const genderDoughnut = {
+    labels: genderFiltered.map(d => d.label),
+    datasets: [{
+      data: genderFiltered.map(d => d.count),
+      backgroundColor: COLORS.slice(0, genderFiltered.length),
+      borderColor: '#fff',
+      borderWidth: 3,
+      hoverOffset: 6,
+    }]
+  }
+
+  // Doughnut — language
+  const langFiltered = languageData.filter(d => d.count > 0)
+  const langDoughnut = {
+    labels: langFiltered.map(d => d.label),
+    datasets: [{
+      data: langFiltered.map(d => d.count),
+      backgroundColor: ['#2DD4BF', '#FB923C', '#60A5FA', '#F472B6', '#34D399', '#A78BFA'],
+      borderColor: '#fff',
+      borderWidth: 3,
+      hoverOffset: 6,
+    }]
+  }
+
+  const doughnutOptions = {
+    responsive: true,
+    cutout: '65%',
+    plugins: {
+      legend: {
+        position: 'bottom' as const,
+        labels: {
+          color: STONE,
+          font: { size: 11 },
+          padding: 16,
+          usePointStyle: true,
+          pointStyleWidth: 8,
+        },
+      },
+      tooltip: {
+        backgroundColor: '#1C1917',
+        titleColor: '#FDFAF6',
+        bodyColor: '#A8A29E',
+        padding: 12,
+        cornerRadius: 8,
+      },
+    },
+  }
+
+  const smallBarOptions = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1C1917',
+        titleColor: '#FDFAF6',
+        bodyColor: '#A8A29E',
+        padding: 10,
+        cornerRadius: 8,
+      },
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: STONE, font: { size: 10 } },
+        border: { color: '#E7E5E4' },
+      },
+      y: {
+        grid: { color: '#F5F3F0' },
+        ticks: { color: STONE, font: { size: 10 }, stepSize: 1 },
+        border: { color: '#E7E5E4' },
+        beginAtZero: true,
+      },
+    },
+  }
+
   return (
     <div className="space-y-6">
 
-      {/* Trend */}
-      <TrendChart data={weeklyTrend} />
-
-      {/* Service type breakdown */}
-      <BarChart
-        data={clientsPerType.map(d => ({ label: d.name, count: d.count }))}
-        label="Unique Clients by Service Type"
-      />
-
-      {/* Demographics grid */}
-      <div className="grid grid-cols-3 gap-4">
-        <BarChart
-          data={ageData.filter(d => d.count > 0)}
-          label="Age Groups"
-        />
-        <DonutChart
-          data={genderData.filter(d => d.count > 0)}
-          label="Gender Breakdown"
-        />
-        <DonutChart
-          data={languageData.filter(d => d.count > 0)}
-          label="Primary Language"
-        />
-      </div>
-
-      {/* Service type stats table */}
-      <div className="bg-white border border-[#E7E5E4] rounded-xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#E7E5E4]">
-          <h3 className="text-[#1C1917] font-semibold">Service Type Summary</h3>
+      {/* Weekly Trend — Line Chart */}
+      <div className="bg-white border-2 border-[#E7E5E4] rounded-2xl p-6">
+        <h3 className="font-semibold text-[#1C1917] mb-1">Service Entries Trend</h3>
+        <p className="text-xs text-[#A8A29E] mb-5">Last 8 weeks</p>
+        <div className="h-52">
+          <Line data={lineData} options={{ ...lineOptions, maintainAspectRatio: false }} />
         </div>
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-[#E7E5E4]">
-              <th className="text-left text-[#78716C] text-sm px-5 py-3">Service Type</th>
-              <th className="text-right text-[#78716C] text-sm px-5 py-3">Unique Clients</th>
-              <th className="text-right text-[#78716C] text-sm px-5 py-3">Total Entries</th>
-              <th className="text-right text-[#78716C] text-sm px-5 py-3">Avg Visits/Client</th>
-            </tr>
-          </thead>
-          <tbody>
-            {statsPerType.map((st, i) => (
-              <tr key={st.name}
-                className={`border-b border-[#E7E5E4] ${i % 2 === 0 ? '' : 'bg-[#F5F3F0]/30'}`}>
-                <td className="text-[#1C1917] text-sm px-5 py-3">{st.name}</td>
-                <td className="text-[#57534E] text-sm px-5 py-3 text-right">{st.unique_clients}</td>
-                <td className="text-[#57534E] text-sm px-5 py-3 text-right">{st.total_entries}</td>
-                <td className="text-[#57534E] text-sm px-5 py-3 text-right">
-                  {st.unique_clients > 0
-                    ? (st.total_entries / st.unique_clients).toFixed(1)
-                    : '—'}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
 
+      {/* Clients by Service Type — Bar Chart */}
+      {clientsPerType.length > 0 && (
+        <div className="bg-white border-2 border-[#E7E5E4] rounded-2xl p-6">
+          <h3 className="font-semibold text-[#1C1917] mb-1">Clients by Service Type</h3>
+          <p className="text-xs text-[#A8A29E] mb-5">Unique clients per program</p>
+          <div className="h-52">
+            <Bar data={barData} options={{ ...barOptions, maintainAspectRatio: false }} />
+          </div>
+        </div>
+      )}
+
+      {/* Demographics Row */}
+      <div className="grid grid-cols-3 gap-4">
+
+        {/* Age Groups */}
+        <div className="bg-white border-2 border-[#E7E5E4] rounded-2xl p-5">
+          <h3 className="font-semibold text-[#1C1917] mb-1 text-sm">Age Groups</h3>
+          <p className="text-xs text-[#A8A29E] mb-4">Distribution</p>
+          <div className="h-40">
+            <Bar
+              data={ageBarData}
+              options={{ ...smallBarOptions, maintainAspectRatio: false }}
+            />
+          </div>
+        </div>
+
+        {/* Gender Doughnut */}
+        <div className="bg-white border-2 border-[#E7E5E4] rounded-2xl p-5">
+          <h3 className="font-semibold text-[#1C1917] mb-1 text-sm">Gender</h3>
+          <p className="text-xs text-[#A8A29E] mb-2">Breakdown</p>
+          {genderFiltered.length > 0 ? (
+            <div className="h-44">
+              <Doughnut
+                data={genderDoughnut}
+                options={{ ...doughnutOptions, maintainAspectRatio: false }}
+              />
+            </div>
+          ) : (
+            <p className="text-[#A8A29E] text-sm text-center py-8">No data</p>
+          )}
+        </div>
+
+        {/* Language Doughnut */}
+        <div className="bg-white border-2 border-[#E7E5E4] rounded-2xl p-5">
+          <h3 className="font-semibold text-[#1C1917] mb-1 text-sm">Language</h3>
+          <p className="text-xs text-[#A8A29E] mb-2">Primary language</p>
+          {langFiltered.length > 0 ? (
+            <div className="h-44">
+              <Doughnut
+                data={langDoughnut}
+                options={{ ...doughnutOptions, maintainAspectRatio: false }}
+              />
+            </div>
+          ) : (
+            <p className="text-[#A8A29E] text-sm text-center py-8">No data</p>
+          )}
+        </div>
+      </div>
+
+      {/* Service Type Summary Table */}
+      {statsPerType.length > 0 && (
+        <div className="bg-white border-2 border-[#E7E5E4] rounded-2xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-[#E7E5E4]">
+            <h3 className="font-semibold text-[#1C1917]">Service Type Summary</h3>
+          </div>
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-[#E7E5E4] bg-[#FDFAF6]">
+                <th className="text-left text-[#A8A29E] text-xs font-medium px-6 py-3 uppercase tracking-wide">
+                  Service Type
+                </th>
+                <th className="text-right text-[#A8A29E] text-xs font-medium px-6 py-3 uppercase tracking-wide">
+                  Unique Clients
+                </th>
+                <th className="text-right text-[#A8A29E] text-xs font-medium px-6 py-3 uppercase tracking-wide">
+                  Total Entries
+                </th>
+                <th className="text-right text-[#A8A29E] text-xs font-medium px-6 py-3 uppercase tracking-wide">
+                  Avg Visits
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {statsPerType.map((st, i) => (
+                <tr key={st.name}
+                  className={`border-b border-[#E7E5E4] ${i % 2 === 0 ? '' : 'bg-[#FDFAF6]'}`}>
+                  <td className="px-6 py-3">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        style={{ backgroundColor: COLORS[i % COLORS.length] }}
+                      />
+                      <span className="text-[#1C1917] text-sm font-medium">{st.name}</span>
+                    </div>
+                  </td>
+                  <td className="text-[#57534E] text-sm px-6 py-3 text-right">
+                    {st.unique_clients}
+                  </td>
+                  <td className="text-[#57534E] text-sm px-6 py-3 text-right">
+                    {st.total_entries}
+                  </td>
+                  <td className="text-[#57534E] text-sm px-6 py-3 text-right">
+                    {st.unique_clients > 0
+                      ? (st.total_entries / st.unique_clients).toFixed(1)
+                      : '—'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }

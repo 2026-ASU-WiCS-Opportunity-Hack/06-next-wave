@@ -73,9 +73,21 @@ const { data: entries } = await supabase
               {entries?.length ?? 0} visits
             </span>
             <Link
+  href={`/clients/${id}/journey`}
+  className="text-xs bg-[#FEF3EC] hover:bg-[#F5C5A3] text-[#E07B54] px-3 py-1 rounded-full transition-colors font-medium"
+>
+  View Journey
+</Link>
+            <Link
               href={`/clients/${id}/edit`}
               className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-full transition-colors"
             >
+              <Link
+  href={`/clients/${id}/schedule`}
+  className="text-xs bg-[#FEF3EC] hover:bg-[#F5C5A3] text-[#E07B54] px-3 py-1 rounded-full transition-colors font-medium"
+>
+  📅 Schedule
+</Link>
               Edit
             </Link>
           </div>
