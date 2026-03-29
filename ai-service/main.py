@@ -9,7 +9,9 @@ app = FastAPI(title="CareTrack AI Service")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000","http://localhost:3001","https://06-next-wave.vercel.app/","*",],  # add Vercel URL later
+    allow_origins=["http://localhost:3000","http://localhost:3001","https://06-next-wave.vercel.app/","*","http://localhost:3000",
+    "https://06-next-wave.vercel.app",
+    "https://zero6-next-wave.onrender.com"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
