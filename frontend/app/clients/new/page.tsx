@@ -13,6 +13,7 @@ export default function NewClientPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [lang, setLang] = useState<Language>('en')
+  const [authChecked, setAuthChecked] = useState(false)
   const [loading, setLoading] = useState(false)
   const [scanning, setScanning] = useState(false)
   const [profile, setProfile] = useState<any>(null)
@@ -89,10 +90,11 @@ export default function NewClientPage() {
           await loadFormSchema(stId, stName)
         }
       } else {
-        if (p?.role === 'staff' && !eventId) {
-  router.push('/events')
-  return
-}
+      const currentEventId = searchParams.get('event_id')
+  if (p?.role === 'staff' && !currentEventId) {
+    router.push('/events')
+    return
+  }
 
         let evQuery = supabase
           .from('events')
@@ -107,6 +109,7 @@ export default function NewClientPage() {
         setEvents(evList ?? [])
       }
     }
+    setAuthChecked(true)
     load()
   }, [eventId])
 
@@ -271,7 +274,7 @@ export default function NewClientPage() {
 
   const inputClass = "w-full bg-white border-2 border-[#E7E5E4] text-[#1C1917] placeholder-[#C4BFB9] rounded-xl px-4 py-3 focus:outline-none focus:border-[#E07B54] transition-colors"
   const labelClass = "text-sm font-medium text-[#1C1917] mb-1.5 block"
-
+if (!authChecked) return null
   return (
     <div className="min-h-screen bg-[#FDFAF6] p-6">
       <div className="max-w-2xl mx-auto space-y-6">
